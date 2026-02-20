@@ -3,7 +3,7 @@ package pageobjects.registration;
 import org.openqa.selenium.By;
 
 public enum RegistrationField implements RegistrationInput {
-    FIRST_NAME(By.id("AccountFrm_firstname")),
+    FIRST_NAME_FIELD(By.id("AccountFrm_firstname")),
     LAST_NAME_FIELD(By.id("AccountFrm_lastname")),
     EMAIL_FIELD(By.id("AccountFrm_email")),
     TELEPHONE_FIELD(By.id("AccountFrm_telephone")),

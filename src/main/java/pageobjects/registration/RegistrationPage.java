@@ -1,5 +1,6 @@
 package pageobjects.registration;
 
+import dto.User;
 import org.instancio.Instancio;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,6 +14,7 @@ import pageobjects.registration.success.SuccessfulRegistrationPage;
 import java.util.List;
 
 import static constants.BaseUrls.REGISTRATION_BASE_URL;
+import static pageobjects.registration.RegistrationField.*;
 import static utils.StringFormatHelper.trimCloseAlertCross;
 
 public class RegistrationPage extends BasePage {
@@ -66,6 +68,57 @@ public class RegistrationPage extends BasePage {
             privacyPolicyCheckbox.click();
         }
         return this;
+    }
+
+
+    public RegistrationPage fillOnlyRequiredFields(User user) {
+        if (user.getFirstName() != null) {
+            fill(FIRST_NAME_FIELD, user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            fill(LAST_NAME_FIELD, user.getLastName());
+        }
+        if (user.getEmail() != null) {
+            fill(EMAIL_FIELD, user.getEmail());
+        }
+        if (user.getAddress_1() != null) {
+            fill(ADDRESS_1_FIELD, user.getAddress_1());
+        }
+        if (user.getCity() != null) {
+            fill(CITY_FIELD, user.getCity());
+        }
+        if (user.getZipCode() != null) {
+            fill(ZIP_CODE_FIELD, user.getZipCode());
+        }
+        if (user.getLoginName() != null) {
+            fill(LOGIN_NAME_FIELD, user.getLoginName());
+        }
+        if (user.getPassword() != null) {
+            fill(PASSWORD_FIELD, user.getPassword());
+        }
+        if (user.getPasswordConfirm() != null) {
+            fill(PASSWORD_CONFIRM_FIELD, user.getPasswordConfirm());
+        }
+        selectRandomCountry();
+        selectRandomRegionState();
+        checkPrivacyPolicyCheckbox();
+        return this;
+    }
+
+    public RegistrationPage fillAllFields(User user) {
+        if (user.getTelephone() != null) {
+            fill(TELEPHONE_FIELD, user.getTelephone());
+        }
+        if (user.getFax() != null) {
+            fill(FAX_FIELD, user.getFax());
+        }
+        if (user.getCompany() != null) {
+            fill(COMPANY_FIELD, user.getCompany());
+        }
+        if (user.getAddress_2() != null) {
+            fill(ADDRESS_2_FIELD, user.getAddress_2());
+        }
+        return fillOnlyRequiredFields(user);
     }
 
 
