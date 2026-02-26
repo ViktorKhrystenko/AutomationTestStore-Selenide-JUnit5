@@ -3,6 +3,8 @@ package pageobjects.home;
 import org.openqa.selenium.WebDriver;
 import pageobjects.BasePage;
 
+import java.util.regex.Pattern;
+
 import static constants.BaseUrls.HOME_BASE_URL;
 
 public class HomePage extends BasePage {
@@ -12,6 +14,6 @@ public class HomePage extends BasePage {
 
     public HomePage(WebDriver driver) {
         super(driver);
-        checkLocation(BASE_URL, PAGE_NAME);
+        checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
     }
 }

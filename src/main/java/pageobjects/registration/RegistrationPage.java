@@ -11,6 +11,8 @@ import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
 import utils.datagenerator.DataGenerator;
 
+import java.util.regex.Pattern;
+
 import static constants.BaseUrls.REGISTRATION_BASE_URL;
 import static pageobjects.registration.RegistrationField.*;
 import static utils.StringFormatHelper.trimCloseAlertCross;
@@ -33,7 +35,7 @@ public class RegistrationPage extends BasePage {
 
     public RegistrationPage(WebDriver driver) {
         super(driver);
-        checkLocation(BASE_URL, PAGE_NAME);
+        checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
     }
 

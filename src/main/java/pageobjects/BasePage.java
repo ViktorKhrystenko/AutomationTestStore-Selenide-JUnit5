@@ -23,15 +23,14 @@ public abstract class BasePage {
     }
 
 
-    public void enterText(By locator, String text) {
+    protected void enterText(By locator, String text) {
         driver.findElement(locator).sendKeys(text);
     }
 
-    public void waitUntilPageIsLoaded() {
+    protected void waitUntilPageIsLoaded() {
         wait.until(d -> ((JavascriptExecutor) d)
                 .executeScript("return document.readyState").equals("complete"));
     }
-
 
     protected void checkLocation(String regex, String pageName) {
         String currentUrl = driver.getCurrentUrl();

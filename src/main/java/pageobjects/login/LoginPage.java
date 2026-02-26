@@ -8,6 +8,8 @@ import pageobjects.BasePage;
 import pageobjects.account.AccountPage;
 import pageobjects.registration.RegistrationPage;
 
+import java.util.regex.Pattern;
+
 import static constants.BaseUrls.LOGIN_BASE_URL;
 import static utils.StringFormatHelper.trimCloseAlertCross;
 
@@ -33,7 +35,7 @@ public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver driver) {
         super(driver);
-        checkLocation(BASE_URL, PAGE_NAME);
+        checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
     }
 
