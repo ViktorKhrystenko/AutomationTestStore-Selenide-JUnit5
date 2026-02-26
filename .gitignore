@@ -40,3 +40,5 @@ build/
 .idea/
 
 test-artifacts/test-cases/**/pict
+
+.allure/*

@@ -1,7 +1,6 @@
 package pageobjects.registration;
 
 import dto.User;
-import org.instancio.Instancio;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,8 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
-
-import java.util.List;
+import utils.datagenerator.DataGenerator;
 
 import static constants.BaseUrls.REGISTRATION_BASE_URL;
 import static pageobjects.registration.RegistrationField.*;
@@ -46,13 +44,13 @@ public class RegistrationPage extends BasePage {
     }
 
 
-    public RegistrationPage selectRandomRegionState() {
-        selectRandomOption(RegistrationDropdown.REGION_STATE_FIELD.getLocator());
+    public RegistrationPage selectRandomRegionState(DataGenerator generator) {
+        selectRandomOption(RegistrationDropdown.REGION_STATE_FIELD.getLocator(), generator);
         return this;
     }
 
-    public RegistrationPage selectRandomCountry() {
-        selectRandomOption(RegistrationDropdown.COUNTRY_FIELD.getLocator());
+    public RegistrationPage selectRandomCountry(DataGenerator generator) {
+        selectRandomOption(RegistrationDropdown.COUNTRY_FIELD.getLocator(), generator);
         return this;
     }
 
@@ -71,7 +69,7 @@ public class RegistrationPage extends BasePage {
     }
 
 
-    public RegistrationPage fillOnlyRequiredFields(User user) {
+    public RegistrationPage fillOnlyRequiredFields(User user, DataGenerator generator) {
         if (user.getFirstName() != null) {
             fill(FIRST_NAME_FIELD, user.getFirstName());
         }
@@ -99,13 +97,13 @@ public class RegistrationPage extends BasePage {
         if (user.getPasswordConfirm() != null) {
             fill(PASSWORD_CONFIRM_FIELD, user.getPasswordConfirm());
         }
-        selectRandomCountry();
-        selectRandomRegionState();
+        selectRandomCountry(generator);
+        selectRandomRegionState(generator);
         checkPrivacyPolicyCheckbox();
         return this;
     }
 
-    public RegistrationPage fillAllFields(User user) {
+    public RegistrationPage fillAllFields(User user, DataGenerator generator) {
         if (user.getTelephone() != null) {
             fill(TELEPHONE_FIELD, user.getTelephone());
         }
@@ -118,7 +116,7 @@ public class RegistrationPage extends BasePage {
         if (user.getAddress_2() != null) {
             fill(ADDRESS_2_FIELD, user.getAddress_2());
         }
-        return fillOnlyRequiredFields(user);
+        return fillOnlyRequiredFields(user, generator);
     }
 
 
@@ -142,12 +140,11 @@ public class RegistrationPage extends BasePage {
     }
 
 
-    private void selectRandomOption(By selectLocator) {
+    private void selectRandomOption(By selectLocator, DataGenerator generator) {
         WebElement selectElement = driver.findElement(selectLocator);
         Select select = new Select(selectElement);
-        List<WebElement> options = select.getOptions();
-        int optionIndex = Instancio.gen().ints().range(0, options.size() - 1).get();
-        String optionVisibleText = options.get(optionIndex).getText();
+        WebElement randomOption = generator.selectRandomOption(select.getOptions());
+        String optionVisibleText = randomOption.getText();
         select.selectByVisibleText(optionVisibleText);
     }
 }

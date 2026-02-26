@@ -12,7 +12,7 @@ public class ScreenshotListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-        Object testClass = result.getTestClass();
+        Object testClass = result.getInstance();
         WebDriver driver = ((BaseTest) testClass).getDriver();
         if (driver != null) {
             attachScreenshot(driver);
