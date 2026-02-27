@@ -1,5 +1,6 @@
 package pageobjects.navigation;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +19,7 @@ public class NavigationBar extends BasePage {
     }
 
 
+    @Step("Click on 'Login or register' link")
     public LoginPage clickOnLoginOrRegisterLink() {
         loginOrRegisterLink.click();
         waitUntilPageIsLoaded();

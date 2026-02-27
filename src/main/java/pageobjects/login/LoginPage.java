@@ -1,5 +1,6 @@
 package pageobjects.login;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,23 +41,27 @@ public class LoginPage extends BasePage {
     }
 
 
+    @Step("Fill 'Login name' field")
     public LoginPage fillLoginNameField(String loginName) {
         loginNameField.sendKeys(loginName);
         return this;
     }
 
+    @Step("Fill 'Password' field")
     public LoginPage fillPasswordField(String password) {
         passwordField.sendKeys(password);
         return this;
     }
 
 
+    @Step("Click on 'Login' button")
     public AccountPage clickOnLoginButton() {
         loginButton.click();
         waitUntilPageIsLoaded();
         return new AccountPage(driver);
     }
 
+    @Step("Click on 'To registration page' button")
     public RegistrationPage clickOnToRegistrationPageButton() {
         toRegistrationPageButton.click();
         waitUntilPageIsLoaded();

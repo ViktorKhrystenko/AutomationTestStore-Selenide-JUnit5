@@ -1,6 +1,8 @@
 package pageobjects.registration;
 
 import dto.User;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,20 +44,24 @@ public class RegistrationPage extends BasePage {
 
     public RegistrationPage fill(RegistrationField field, String data) {
         enterText(field.getLocator(), data);
+        Allure.step(String.format("Fill '%s' field", field.name()));
         return this;
     }
 
 
+    @Step("Select random option in 'Region / State' dropdown")
     public RegistrationPage selectRandomRegionState(DataGenerator generator) {
         selectRandomOption(RegistrationDropdown.REGION_STATE_FIELD.getLocator(), generator);
         return this;
     }
 
+    @Step("Select random option in 'Country' dropdown")
     public RegistrationPage selectRandomCountry(DataGenerator generator) {
         selectRandomOption(RegistrationDropdown.COUNTRY_FIELD.getLocator(), generator);
         return this;
     }
 
+    @Step("Uncheck Privacy Policy checkbox")
     public RegistrationPage checkPrivacyPolicyCheckbox() {
         if (privacyPolicyCheckbox.getDomProperty("checked").equals("false")) {
             privacyPolicyCheckbox.click();
@@ -63,6 +69,7 @@ public class RegistrationPage extends BasePage {
         return this;
     }
 
+    @Step("Uncheck Privacy Policy checkbox")
     public RegistrationPage uncheckPrivacyPolicyCheckbox() {
         if (!privacyPolicyCheckbox.getDomProperty("checked").equals("false")) {
             privacyPolicyCheckbox.click();
@@ -71,6 +78,7 @@ public class RegistrationPage extends BasePage {
     }
 
 
+    @Step("Fill only required during registration fields")
     public RegistrationPage fillOnlyRequiredFields(User user, DataGenerator generator) {
         if (user.getFirstName() != null) {
             fill(FIRST_NAME_FIELD, user.getFirstName());
@@ -105,6 +113,7 @@ public class RegistrationPage extends BasePage {
         return this;
     }
 
+    @Step("Fill all registration fields")
     public RegistrationPage fillAllFields(User user, DataGenerator generator) {
         if (user.getTelephone() != null) {
             fill(TELEPHONE_FIELD, user.getTelephone());
@@ -122,6 +131,7 @@ public class RegistrationPage extends BasePage {
     }
 
 
+    @Step("Click on 'Continue' button")
     public SuccessfulRegistrationPage clickOnContinueButton() {
         continueButton.click();
         waitUntilPageIsLoaded();
