@@ -6,7 +6,9 @@ import org.instancio.Instancio;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import utils.datagenerator.generators.InvalidEmailGenerator;
-import utils.datagenerator.generators.InvalidEmailGenerator.ErrorType;
+import utils.datagenerator.generators.InvalidEmailGenerator.EmailErrorType;
+import utils.datagenerator.generators.InvalidTelephoneGenerator;
+import utils.datagenerator.generators.InvalidTelephoneGenerator.TelephoneErrorType;
 
 import java.util.List;
 import java.util.Random;
@@ -108,9 +110,31 @@ public class DataGenerator {
                 .create();
     }
 
-    public String generateInvalidEmail(ErrorType errorType) {
+    public String generateInvalidEmail(EmailErrorType errorType) {
         return Instancio.of(String.class).withSettings(getSeedSettings())
                 .supply(root(), new InvalidEmailGenerator(errorType))
+                .create();
+    }
+
+
+    public String generateValidTelephone() {
+        String telephonePattern = "+" + "#d".repeat(
+                Instancio.gen().withSettings(getSeedSettings())
+                        .ints().range(7, 15).get());
+        return Instancio.of(String.class).withSettings(getSeedSettings())
+                .generate(root(), gen -> gen.text().pattern(telephonePattern))
+                .create();
+    }
+
+    public String generateRandomInvalidTelephone() {
+        return Instancio.of(String.class).withSettings(getSeedSettings())
+                .generate(root(), new InvalidTelephoneGenerator())
+                .create();
+    }
+
+    public String generateInvalidTelephone(TelephoneErrorType errorType) {
+        return Instancio.of(String.class).withSettings(getSeedSettings())
+                .generate(root(), new InvalidTelephoneGenerator(errorType))
                 .create();
     }
 }

@@ -7,7 +7,7 @@ public class InvalidEmailGenerator implements Generator<String> {
     private static final String EMAIL_FORBIDDEN_SPECIAL_CHARACTERS = " (),:;<>@[\\]\"!#$%&'*/=?^`{|}~";
 
 
-    public enum ErrorType {
+    public enum EmailErrorType {
         PREFIX_STARTS_WITH_DOT,
         PREFIX_ENDS_WITH_DOT,
         PREFIX_WITH_DOUBLE_DOT,
@@ -28,12 +28,12 @@ public class InvalidEmailGenerator implements Generator<String> {
     }
 
 
-    private ErrorType errorType;
+    private EmailErrorType errorType;
 
 
     public InvalidEmailGenerator() {}
 
-    public InvalidEmailGenerator(ErrorType errorType) {
+    public InvalidEmailGenerator(EmailErrorType errorType) {
         this.errorType = errorType;
     }
 
@@ -49,7 +49,7 @@ public class InvalidEmailGenerator implements Generator<String> {
         String dnsDomain = random.alphanumeric(dnsDomainLength);
 
         if (errorType == null) {
-            errorType = random.oneOf(ErrorType.values());
+            errorType = random.oneOf(EmailErrorType.values());
         }
 
         switch (errorType) {

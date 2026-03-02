@@ -7,8 +7,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageobjects.navigation.NavigationBar;
 import pageobjects.registration.RegistrationPage;
-import pageobjects.registration.success.SuccessfulRegistrationPage;
 import tests.BaseTest;
+import utils.datagenerator.generators.InvalidTelephoneGenerator;
 
 import java.util.regex.Pattern;
 
@@ -18,6 +18,10 @@ import static constants.BaseUrls.HOME_BASE_URL;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.testng.Assert.*;
+
+import static pageobjects.registration.RegistrationField.*;
+
+import static utils.datagenerator.generators.InvalidTelephoneGenerator.TelephoneErrorType.*;
 
 import static utils.StringFormatHelper.doesStringMatchRegex;
 import static utils.EmailValidator.isEmailValid;
@@ -395,6 +399,91 @@ public class RegistrationTests extends BaseTest {
                 .clickOnToRegistrationPageButton();
 
         registrationPage.fillOnlyRequiredFields(userWithSameEmail, generator);
+
+        assertThatExceptionOfType(PageNavigationException.class)
+                .isThrownBy(() -> registrationPage.clickOnContinueButton());
+
+        assertTrue(doesStringMatchRegex(
+                driver.getCurrentUrl(),
+                Pattern.quote(REGISTRATION_BASE_URL)));
+    }
+
+
+    @Test
+    public void verifyUserRegistrationWithTooShortTelephone() {
+        user.setTelephone(generator.generateInvalidTelephone(TOO_SHORT));
+
+        registrationPage.fillOnlyRequiredFields(user, generator)
+                .fill(TELEPHONE_FIELD, user.getTelephone());
+
+        assertThatExceptionOfType(PageNavigationException.class)
+                .isThrownBy(() -> registrationPage.clickOnContinueButton());
+
+        assertTrue(doesStringMatchRegex(
+                driver.getCurrentUrl(),
+                Pattern.quote(REGISTRATION_BASE_URL)));
+    }
+
+    @Test
+    public void verifyUserRegistrationWithTooLongTelephone() {
+        user.setTelephone(generator.generateInvalidTelephone(TOO_LONG));
+
+        registrationPage.fillOnlyRequiredFields(user, generator)
+                .fill(TELEPHONE_FIELD, user.getTelephone());
+
+        assertThatExceptionOfType(PageNavigationException.class)
+                .isThrownBy(() -> registrationPage.clickOnContinueButton());
+
+        assertTrue(doesStringMatchRegex(
+                driver.getCurrentUrl(),
+                Pattern.quote(REGISTRATION_BASE_URL)));
+    }
+
+    @Test
+    public void verifyUserRegistrationWithSpecialCharactersInsideTelephoneField() {
+        user.setTelephone(generator.generateInvalidTelephone(TOO_LONG));
+
+        registrationPage.fillOnlyRequiredFields(user, generator)
+                .fill(TELEPHONE_FIELD, user.getTelephone());
+
+        assertThatExceptionOfType(PageNavigationException.class)
+                .isThrownBy(() -> registrationPage.clickOnContinueButton());
+
+        assertTrue(doesStringMatchRegex(
+                driver.getCurrentUrl(),
+                Pattern.quote(REGISTRATION_BASE_URL)));
+    }
+
+    @Test
+    public void verifyUserRegistrationWithLettersInsideTelephoneField() {
+        user.setTelephone(generator.generateInvalidTelephone(WITH_LETTERS));
+
+        registrationPage.fillOnlyRequiredFields(user, generator)
+                .fill(TELEPHONE_FIELD, user.getTelephone());
+
+        assertThatExceptionOfType(PageNavigationException.class)
+                .isThrownBy(() -> registrationPage.clickOnContinueButton());
+
+        assertTrue(doesStringMatchRegex(
+                driver.getCurrentUrl(),
+                Pattern.quote(REGISTRATION_BASE_URL)));
+    }
+
+    @Test
+    public void verifyUserRegistrationWithAlreadyUsedTelephone() {
+        User userWithSameTelephone = generator.generateUser();
+        userWithSameTelephone.setTelephone(user.getTelephone());
+
+        registrationPage.fillOnlyRequiredFields(user, generator)
+                .fill(TELEPHONE_FIELD, user.getTelephone())
+                .clickOnContinueButton()
+                .clickOnLogoffLink();
+
+        registrationPage = navigation.clickOnLoginOrRegisterLink()
+                .clickOnToRegistrationPageButton();
+
+        registrationPage.fillOnlyRequiredFields(userWithSameTelephone, generator)
+                .fill(TELEPHONE_FIELD, userWithSameTelephone.getTelephone());
 
         assertThatExceptionOfType(PageNavigationException.class)
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
