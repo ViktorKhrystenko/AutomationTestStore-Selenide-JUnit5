@@ -16,4 +16,22 @@ public class StringFormatHelper {
         // we substring error message, because first 2 characters are "×\n" from close alert cross
         return stringToTrim.substring(2);
     }
+
+    public static String addSymbolsToField(String field, String symbolsToAdd, int maxFieldLength) {
+        if (symbolsToAdd.length() > maxFieldLength) {
+            throw new IllegalArgumentException("Length of symbolsToAdd argument is bigger than maxFieldLength");
+        }
+        if (field.length() + symbolsToAdd.length() >= maxFieldLength) {
+            if (symbolsToAdd.length() >= field.length()) {
+                field = symbolsToAdd;
+            }
+            else {
+                field = symbolsToAdd + field.substring(symbolsToAdd.length());
+            }
+        }
+        else {
+            field = symbolsToAdd + field;
+        }
+        return field;
+    }
 }

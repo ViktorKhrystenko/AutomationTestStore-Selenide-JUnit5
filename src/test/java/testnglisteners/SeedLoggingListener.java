@@ -14,7 +14,7 @@ public class SeedLoggingListener implements ITestListener {
         Object testClass = result.getInstance();
         Method testMethod = result.getMethod().getConstructorOrMethod().getMethod();
         DataGenerator generator = ((BaseTest) testClass).getGenerator();
-        System.err.printf("Instancio = Test method '%s' from %s test class failed with seed: %d",
+        System.err.printf("Instancio = Test method '%s' from %s test class failed with seed: %d\n",
                 testMethod.getName(),
                 testClass.getClass().getName(),
                 generator.getORIGINAL_SEED());

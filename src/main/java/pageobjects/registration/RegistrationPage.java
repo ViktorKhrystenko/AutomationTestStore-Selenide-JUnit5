@@ -8,14 +8,18 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
 import utils.datagenerator.DataGenerator;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static constants.BaseUrls.REGISTRATION_BASE_URL;
+
+import static constants.FormValues.DESELECTED_OPTION;
 
 import static pageobjects.registration.RegistrationField.*;
 import static pageobjects.registration.RegistrationDropdown.*;
@@ -61,6 +65,13 @@ public class RegistrationPage extends BasePage {
     @Step("Select random option in 'Country' dropdown")
     public RegistrationPage selectRandomCountry(DataGenerator generator) {
         selectRandomOption(COUNTRY_DROPDOWN.getLocator(), generator);
+        return this;
+    }
+
+    @Step("Deselect 'Country' dropdown")
+    public RegistrationPage deselectCountry() {
+        Select countrySelect = new Select(driver.findElement(COUNTRY_DROPDOWN.getLocator()));
+        countrySelect.selectByVisibleText(DESELECTED_OPTION);
         return this;
     }
 
@@ -160,11 +171,22 @@ public class RegistrationPage extends BasePage {
 
 
     private void selectRandomOption(By selectLocator, DataGenerator generator) {
-        WebElement selectElement = driver.findElement(selectLocator);
+        WebElement selectElement = wait.until(
+                ExpectedConditions.presenceOfElementLocated(selectLocator));
         Select select = new Select(selectElement);
-        WebElement randomOption = generator.selectRandomOption(select.getOptions());
+        List<WebElement> randomOptions = select.getOptions();
+        waitUntilElementStopsBeingStale(randomOptions.get(0));
+        randomOptions = randomOptions.stream()
+                .filter(option -> !option.getText().equals(DESELECTED_OPTION))
+                .toList();
+        WebElement randomOption = generator.selectRandomOption(randomOptions);
         String optionVisibleText = randomOption.getText();
-        select.selectByVisibleText(optionVisibleText);
+        selectOptionByVisibleText(selectLocator, optionVisibleText);
+        wait.until(d -> {
+            Select selectRecheck = new Select(wait.until(
+                    ExpectedConditions.presenceOfElementLocated(selectLocator)));
+            return selectRecheck.getFirstSelectedOption().getText().equals(optionVisibleText);
+        });
     }
 
     private WebElement getSelectedOption(By selectLocator) {

@@ -1,9 +1,10 @@
 package pageobjects;
 
 import exceptions.PageNavigationException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import exceptions.UnableToSelectOptionException;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -27,6 +28,27 @@ public abstract class BasePage {
         driver.findElement(locator).sendKeys(text);
     }
 
+    protected void selectOptionByVisibleText(By selectLocator, String optionVisibleText) {
+        int counter = 0;
+        while (counter < 3) {
+            try {
+                WebElement selectElement = wait.until(
+                        ExpectedConditions.presenceOfElementLocated(selectLocator));
+                if (selectElement == null) {
+                    counter++;
+                    continue;
+                }
+                Select select = new Select(selectElement);
+                select.selectByVisibleText(optionVisibleText);
+                return;
+            }
+            catch (StaleElementReferenceException e) {
+                counter++;
+            }
+        }
+        throw new UnableToSelectOptionException(optionVisibleText, selectLocator.toString());
+    }
+
     protected void waitUntilPageIsLoaded() {
         wait.until(d -> ((JavascriptExecutor) d)
                 .executeScript("return document.readyState").equals("complete"));
@@ -37,5 +59,16 @@ public abstract class BasePage {
         if (!doesStringMatchRegex(currentUrl, regex)) {
             throw new PageNavigationException(pageName, regex, currentUrl);
         }
+    }
+
+    protected void waitUntilElementStopsBeingStale(WebElement element) {
+        wait.until(d -> {
+            try {
+                element.getTagName();
+                return true;
+            } catch (StaleElementReferenceException e) {
+                return false;
+            }
+        });
     }
 }

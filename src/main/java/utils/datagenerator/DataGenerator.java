@@ -97,6 +97,29 @@ public class DataGenerator {
                 .string().mixedCase().minLength(minLength).get();
     }
 
+    public String randomString(int minLength, int maxLength) {
+        return Instancio.gen().withSettings(getSeedSettings())
+                .string().mixedCase()
+                .minLength(minLength)
+                .maxLength(maxLength)
+                .get();
+    }
+
+    public String randomNumericString(int minLength) {
+        return Instancio.gen().withSettings(getSeedSettings())
+                .string().digits()
+                .minLength(minLength)
+                .get();
+    }
+
+    public String randomNumericString(int minLength, int maxLength) {
+        return Instancio.gen().withSettings(getSeedSettings())
+                .string().digits()
+                .minLength(minLength)
+                .maxLength(maxLength)
+                .get();
+    }
+
 
     public String generateValidEmail() {
         return Instancio.of(String.class).withSettings(getSeedSettings())
