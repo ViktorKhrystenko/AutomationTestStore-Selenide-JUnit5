@@ -5,7 +5,7 @@ import exceptions.PageNavigationException;
 import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pageobjects.navigation.NavigationBar;
+import pageobjects.components.navigation.NavigationBar;
 import pageobjects.registration.RegistrationPage;
 import tests.BaseTest;
 

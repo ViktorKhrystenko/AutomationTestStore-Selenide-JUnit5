@@ -5,11 +5,16 @@ import exceptions.UnableToSelectOptionException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.datagenerator.DataGenerator;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.NoSuchElementException;
 
+import static constants.FormValues.DESELECTED_OPTION;
 import static utils.StringFormatHelper.doesStringMatchRegex;
 
 public abstract class BasePage {
@@ -27,6 +32,35 @@ public abstract class BasePage {
 
     protected void enterText(By locator, String text) {
         driver.findElement(locator).sendKeys(text);
+    }
+
+    protected void selectRandomOption(By selectLocator, DataGenerator generator) {
+        FluentWait<WebDriver> fWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class);
+        fWait.until(d -> {
+            WebElement selectElement = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(selectLocator));
+            Select select = new Select(selectElement);
+            String selectedOption = select.getFirstSelectedOption().getText();
+            List<WebElement> randomOptions = select.getOptions();
+            randomOptions = randomOptions.stream()
+                    .filter(option -> !option.getText().equals(DESELECTED_OPTION)
+                            & !option.getText().equals(selectedOption))
+                    .toList();
+            randomOptions.get(0).isEnabled();
+            WebElement randomOption = generator.selectRandomOption(randomOptions);
+            String optionVisibleText = randomOption.getText();
+            selectOptionByVisibleText(selectLocator, optionVisibleText);
+            wait.until(dr -> {
+                Select selectRecheck = new Select(wait.until(
+                        ExpectedConditions.presenceOfElementLocated(selectLocator)));
+                return selectRecheck.getFirstSelectedOption().getText().equals(optionVisibleText);
+            });
+            return true;
+        });
     }
 
     protected void selectOptionByVisibleText(By selectLocator, String optionVisibleText) {

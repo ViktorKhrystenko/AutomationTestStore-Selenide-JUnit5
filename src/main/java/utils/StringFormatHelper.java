@@ -1,9 +1,9 @@
 package utils;
 
-import org.openqa.selenium.WebElement;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static utils.FloatNumberRounder.round;
 
 public class StringFormatHelper {
     public static boolean doesStringMatchRegex(String checkedString, String regex) {
@@ -33,5 +33,25 @@ public class StringFormatHelper {
             field = symbolsToAdd + field;
         }
         return field;
+    }
+
+    public static String getTextAfterColon(String string) {
+        return string.substring(string.indexOf(':') + 1).trim();
+    }
+
+    public static double parsePriceStringToDouble(String priceString) {
+        // substring to remove first '$' symbol
+        return round(Double.parseDouble(priceString.substring(1)), 2);
+    }
+
+    public static String leftOnlyCharactersInRange(String stringToEdit, char lowerBoundChar, char upperBoundChar) {
+        StringBuilder editedString = new StringBuilder(stringToEdit);
+        for (int i = editedString.length() - 1; i >= 0; i--) {
+            if (editedString.charAt(i) < lowerBoundChar
+                    & editedString.charAt(i) > upperBoundChar) {
+                editedString.deleteCharAt(i);
+            }
+        }
+        return editedString.toString();
     }
 }
