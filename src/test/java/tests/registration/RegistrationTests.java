@@ -5,15 +5,15 @@ import exceptions.PageNavigationException;
 import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pageobjects.navigation.NavigationBar;
+import pageobjects.components.navigation.NavigationBar;
 import pageobjects.registration.RegistrationPage;
 import tests.BaseTest;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.REGISTRATION_BASE_URL;
-import static constants.BaseUrls.SUCCESSFUL_REGISTRATION_BASE_URL;
-import static constants.BaseUrls.HOME_BASE_URL;
+import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.SUCCESSFUL_REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.HOME_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 

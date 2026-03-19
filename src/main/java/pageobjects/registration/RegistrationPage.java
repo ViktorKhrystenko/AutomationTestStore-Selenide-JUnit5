@@ -1,27 +1,22 @@
 package pageobjects.registration;
 
 import dto.User;
+import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
 import utils.datagenerator.DataGenerator;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 
@@ -46,7 +41,7 @@ public class RegistrationPage extends BasePage {
     private WebElement registrationErrorAlert;
 
 
-    public RegistrationPage(WebDriver driver) {
+    public RegistrationPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
@@ -54,9 +49,11 @@ public class RegistrationPage extends BasePage {
 
 
     public RegistrationPage fill(RegistrationField field, String data) {
-        enterText(field.getLocator(), data);
-        Allure.step(String.format("Fill '%s' field", field.name()));
-        return this;
+        return Allure.step(String.format("Fill '%s' field", field.name()),
+                () -> {
+                    enterText(field.getLocator(), data);
+                    return this;
+                });
     }
 
 
@@ -150,7 +147,7 @@ public class RegistrationPage extends BasePage {
 
 
     @Step("Click on 'Continue' button")
-    public SuccessfulRegistrationPage clickOnContinueButton() {
+    public SuccessfulRegistrationPage clickOnContinueButton() throws PageNavigationException {
         continueButton.click();
         waitUntilPageIsLoaded();
         return new SuccessfulRegistrationPage(driver);
@@ -171,39 +168,5 @@ public class RegistrationPage extends BasePage {
     public String getRegistrationErrorMessage() {
         String registrationErrorMessage = registrationErrorAlert.getText();
         return trimCloseAlertCross(registrationErrorMessage);
-    }
-
-
-    private void selectRandomOption(By selectLocator, DataGenerator generator) {
-        FluentWait<WebDriver> fWait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(10))
-                .pollingEvery(Duration.ofMillis(500))
-                .ignoring(StaleElementReferenceException.class)
-                .ignoring(NoSuchElementException.class);
-        fWait.until(d -> {
-            WebElement selectElement = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(selectLocator));
-            Select select = new Select(selectElement);
-            List<WebElement> randomOptions = select.getOptions();
-            randomOptions = randomOptions.stream()
-                    .filter(option -> !option.getText().equals(DESELECTED_OPTION))
-                    .toList();
-            randomOptions.get(0).isEnabled();
-            WebElement randomOption = generator.selectRandomOption(randomOptions);
-            String optionVisibleText = randomOption.getText();
-            selectOptionByVisibleText(selectLocator, optionVisibleText);
-            wait.until(dr -> {
-                Select selectRecheck = new Select(wait.until(
-                        ExpectedConditions.presenceOfElementLocated(selectLocator)));
-                return selectRecheck.getFirstSelectedOption().getText().equals(optionVisibleText);
-            });
-            return true;
-        });
-    }
-
-    private WebElement getSelectedOption(By selectLocator) {
-        WebElement selectElement = driver.findElement(selectLocator);
-        Select select = new Select(selectElement);
-        return select.getFirstSelectedOption();
     }
 }
