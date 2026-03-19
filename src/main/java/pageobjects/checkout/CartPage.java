@@ -1,6 +1,9 @@
 package pageobjects.checkout;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,7 +43,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     private ProductTable<CartProduct> productsInCart;
 
 
-    public CartPage(WebDriver driver) {
+    public CartPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         productsInCart = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
@@ -57,6 +60,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     }
 
 
+    @Step("Clear cart")
     public CartPage clearCart() {
         String[] productNames = productsInCart.getProductNames();
         for (String productName: productNames) {
@@ -65,6 +69,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
         return this;
     }
 
+    @Step("Select random country")
     public CartPage selectRandomCountry(DataGenerator generator) {
         selectRandomOption(COUNTRY_DROPDOWN_LOCATOR, generator);
         return this;
@@ -74,6 +79,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
         return getSelectedOption(COUNTRY_DROPDOWN_LOCATOR).getText();
     }
 
+    @Step("Select random state")
     public CartPage selectRandomState(DataGenerator generator) {
         selectRandomOption(STATE_DROPDOWN_LOCATOR, generator);
         return this;
@@ -83,6 +89,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
         return getSelectedOption(STATE_DROPDOWN_LOCATOR).getText();
     }
 
+    @Step("Enter ZIP code")
     public CartPage enterZipCode(String zipCode) {
         zipCodeField.clear();
         zipCodeField.sendKeys(zipCode);
@@ -93,7 +100,8 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
         return zipCodeField.getDomProperty("value");
     }
 
-    public CheckoutConfirmPage clickOnCheckoutButton() {
+    @Step("Click on \"Checkout\" button")
+    public CheckoutConfirmPage clickOnCheckoutButton() throws PageNavigationException, NoSuchElementException {
         checkoutButton.click();
         waitUntilPageIsLoaded();
         return new CheckoutConfirmPage(driver);

@@ -1,5 +1,6 @@
 package pageobjects.account;
 
+import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,21 +25,22 @@ public class AccountPage extends BasePage {
     private WebElement logoffLink;
 
 
-    public AccountPage(WebDriver driver) {
+    public AccountPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
     }
 
 
-    public OrderHistoryPage clickOnOrderHistoryIcon() {
+    @Step("Click on \"Order history\" icon")
+    public OrderHistoryPage clickOnOrderHistoryIcon() throws PageNavigationException {
         orderHistoryIcon.click();
         waitUntilPageIsLoaded();
         return new OrderHistoryPage(driver);
     }
 
     @Step("Click on 'Logoff' link")
-    public LogoutPage clickOnLogoffLink() {
+    public LogoutPage clickOnLogoffLink() throws PageNavigationException {
         logoffLink.click();
         waitUntilPageIsLoaded();
         return new LogoutPage(driver);

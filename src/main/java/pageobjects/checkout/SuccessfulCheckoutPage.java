@@ -1,5 +1,7 @@
 package pageobjects.checkout;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,7 +25,7 @@ public class SuccessfulCheckoutPage extends BasePage {
     private WebElement toInvoicePageLink;
 
 
-    public SuccessfulCheckoutPage(WebDriver driver) {
+    public SuccessfulCheckoutPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
@@ -35,7 +37,8 @@ public class SuccessfulCheckoutPage extends BasePage {
         return yourOrderString.substring(yourOrderString.indexOf('#') + 1).substring(0, ' ');
     }
 
-    public OrderPage clickOnToInvoicePageLink() {
+    @Step("Click on \"To invoice page\" link")
+    public OrderPage clickOnToInvoicePageLink() throws PageNavigationException {
         int orderId = Integer.parseInt(getOrderId());
         toInvoicePageLink.click();
         waitUntilPageIsLoaded();

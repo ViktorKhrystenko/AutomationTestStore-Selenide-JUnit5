@@ -1,5 +1,7 @@
 package pageobjects.components.navigation;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,7 +20,8 @@ public class AccountDropdown extends BasePage {
     }
 
 
-    public OrderHistoryPage clickOnOrderHistoryLink() {
+    @Step("Click on \"Order history\" link")
+    public OrderHistoryPage clickOnOrderHistoryLink() throws PageNavigationException {
         orderHistoryLink.click();
         waitUntilPageIsLoaded();
         return new OrderHistoryPage(driver);

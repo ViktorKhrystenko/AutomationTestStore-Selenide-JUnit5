@@ -1,5 +1,6 @@
 package pageobjects.registration.success;
 
+import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,14 +21,14 @@ public class SuccessfulRegistrationPage extends BasePage {
     private WebElement logoffLink;
 
 
-    public SuccessfulRegistrationPage(WebDriver driver) {
+    public SuccessfulRegistrationPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
     }
 
     @Step("Click on 'Logoff' link")
-    public LogoutPage clickOnLogoffLink() {
+    public LogoutPage clickOnLogoffLink() throws PageNavigationException {
         logoffLink.click();
         waitUntilPageIsLoaded();
         return new LogoutPage(driver);

@@ -1,5 +1,6 @@
 package pageobjects.components.products.table;
 
+import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -101,7 +102,14 @@ public class ProductTable<T extends Product> extends BasePage {
     }
 
     public boolean isTotalPriceCalculatedCorrectly(ProductTable<? extends Product> productTable) {
-        return calculateTotalPrice() == productTable.calculateTotalPrice();
+        return Allure.step("Check if total prise is calculated correctly",
+                () -> {
+                    double actualTotalPrice = productTable.calculateTotalPrice();
+                    double displayedTotalPrice = calculateTotalPrice();
+                    Allure.addAttachment("Actual total price", String.valueOf(actualTotalPrice));
+                    Allure.addAttachment("Displayed total price", String.valueOf(displayedTotalPrice));
+                    return displayedTotalPrice == actualTotalPrice;
+                });
     }
 
 

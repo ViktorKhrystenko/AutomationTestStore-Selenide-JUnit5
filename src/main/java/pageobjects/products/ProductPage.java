@@ -1,5 +1,8 @@
 package pageobjects.products;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
+import org.openqa.selenium.NoSuchElementException;
 import pageobjects.checkout.CartPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,8 +32,11 @@ public class ProductPage extends BasePage {
     @FindBy(css = "a.cart")
     private WebElement addToCartButton;
 
+    @FindBy(className = "nostock")
+    private WebElement outOfStockButton;
 
-    public ProductPage(WebDriver driver, int productId, String productName) {
+
+    public ProductPage(WebDriver driver, int productId, String productName) throws PageNavigationException {
         super(driver);
         BASE_URL = String.format(PRODUCT_PAGE_FORMAT_PATTERN, productId);
         PAGE_NAME = String.format("%s product page", productName);
@@ -38,7 +44,7 @@ public class ProductPage extends BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    public ProductPage(WebDriver driver, int path, int productId, String productName) {
+    public ProductPage(WebDriver driver, int path, int productId, String productName) throws PageNavigationException {
         super(driver);
         BASE_URL = String.format(PRODUCT_WITH_PATH_PAGE_FORMAT_PATTERN, path, productId);
         PAGE_NAME = String.format("%s product page", productName);
@@ -47,16 +53,29 @@ public class ProductPage extends BasePage {
     }
 
 
+    @Step("Set product quantity to {0}")
     public ProductPage setQuantity(long quantity) {
         quantityField.clear();
         quantityField.sendKeys(String.valueOf(quantity));
         return this;
     }
 
-    public CartPage clickOnAddToCartButton() {
+    @Step("Click on \"Add to cart\" button")
+    public CartPage clickOnAddToCartButton() throws PageNavigationException, NoSuchElementException {
         addToCartButton.click();
         waitUntilPageIsLoaded();
         return new CartPage(driver);
+    }
+
+    @Step("Click on \"Out of stock\" button")
+    public void clickOnOutOfStockButton() throws NoSuchElementException {
+        outOfStockButton.click();
+        waitUntilPageIsLoaded();
+        if (!driver.getCurrentUrl().equals(BASE_URL)) {
+            throw new IllegalStateException(String.format("Click on \"Out of stock\" button caused url change. Url had to stay: %s . " +
+                    "Current url: %s",
+                    BASE_URL, driver.getCurrentUrl()));
+        }
     }
 
 

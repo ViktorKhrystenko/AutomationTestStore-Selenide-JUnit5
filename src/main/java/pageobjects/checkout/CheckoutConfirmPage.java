@@ -1,6 +1,8 @@
 package pageobjects.checkout;
 
 import dto.Address;
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -46,7 +48,7 @@ public class CheckoutConfirmPage extends BasePage implements PageWithProductTabl
     private ProductTable<CheckoutConfirmProduct> productsInCart;
 
 
-    public CheckoutConfirmPage(WebDriver driver) {
+    public CheckoutConfirmPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         productsInCart = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
@@ -71,7 +73,9 @@ public class CheckoutConfirmPage extends BasePage implements PageWithProductTabl
         return new Address(paymentAddressFullNameElement, paymentAddressElement);
     }
 
-    public SuccessfulCheckoutPage clickOnConfirmOrderButton() {
+
+    @Step("Click on \"Confirm order\" button")
+    public SuccessfulCheckoutPage clickOnConfirmOrderButton() throws PageNavigationException {
         confirmOrderButton.click();
         waitUntilPageStartsRefreshing();
         waitUntilPageIsLoaded();

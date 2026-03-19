@@ -28,7 +28,7 @@ public abstract class Product extends BasePage {
     }
 
 
-    protected void checkTotalPrice(double totalPrice) {
+    protected void checkTotalPrice(double totalPrice) throws WrongProductPriceCalculationException {
         if (this.totalPrice != totalPrice) {
             throw new WrongProductPriceCalculationException(
                     this.productName, this.unitPrice, this.quantity, this.totalPrice, totalPrice);

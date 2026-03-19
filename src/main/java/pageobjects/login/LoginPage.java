@@ -1,5 +1,6 @@
 package pageobjects.login;
 
+import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,7 +35,7 @@ public class LoginPage extends BasePage {
     private WebElement loginErrorAlert;
 
 
-    public LoginPage(WebDriver driver) {
+    public LoginPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
@@ -55,14 +56,14 @@ public class LoginPage extends BasePage {
 
 
     @Step("Click on 'Login' button")
-    public AccountPage clickOnLoginButton() {
+    public AccountPage clickOnLoginButton() throws PageNavigationException {
         loginButton.click();
         waitUntilPageIsLoaded();
         return new AccountPage(driver);
     }
 
     @Step("Click on 'To registration page' button")
-    public RegistrationPage clickOnToRegistrationPageButton() {
+    public RegistrationPage clickOnToRegistrationPageButton() throws PageNavigationException {
         toRegistrationPageButton.click();
         waitUntilPageIsLoaded();
         return new RegistrationPage(driver);

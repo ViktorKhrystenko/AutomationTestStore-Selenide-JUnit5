@@ -1,5 +1,6 @@
 package pageobjects.products;
 
+import exceptions.PageNavigationException;
 import exceptions.ProductCardNotFoundException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +22,7 @@ public abstract class PageWithProducts extends BasePage {
     private List<ProductCard> productCards;
 
 
-    public PageWithProducts(WebDriver driver, String baseUrl, String pageName) {
+    public PageWithProducts(WebDriver driver, String baseUrl, String pageName) throws PageNavigationException {
         super(driver);
         BASE_URL = baseUrl;
         PAGE_NAME = pageName;
@@ -29,7 +30,7 @@ public abstract class PageWithProducts extends BasePage {
     }
 
 
-    public ProductCard getProductCard(String productName) {
+    public ProductCard getProductCard(String productName) throws ProductCardNotFoundException {
         initProductCardsList();
         for (ProductCard productCard: productCards) {
             if (productCard.getProductName().equalsIgnoreCase(productName)) {

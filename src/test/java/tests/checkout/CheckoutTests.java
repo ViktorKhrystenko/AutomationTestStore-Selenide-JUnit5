@@ -2,8 +2,10 @@ package tests.checkout;
 
 import dto.User;
 import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.ITestResult;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -59,11 +61,7 @@ public class CheckoutTests extends BaseTest {
     private ZoneId timeZone;
 
 
-    // TODO Add "throws" to all methods that throw exceptions to know what to catch
-    // TODO Add Allure attachments to check methods
-    // TODO Add Allure steps
-
-
+    @Step("Login")
     private AccountPage login() {
         return new LoginPage(driver)
                 .fillLoginNameField(user.getLoginName())
@@ -71,18 +69,20 @@ public class CheckoutTests extends BaseTest {
                 .clickOnLoginButton();
     }
 
+    @Step("Logout")
     private LogoutPage logout() {
         return navigation.clickOnAccountPageLink()
                 .clickOnLogoffLink();
     }
 
+    @Step("Clear cart")
     private AccountPage clearCart() {
         navigation.clickOnCartPageLink()
                 .clearCart();
         return navigation.clickOnAccountPageLink();
     }
 
-
+    @Step("Check order page")
     private void checkOrderPage(OrderPage orderPage,
                                 ProductTable<? extends Product> checkoutProducts,
                                 Temporal actualOrderDate) {
@@ -134,7 +134,11 @@ public class CheckoutTests extends BaseTest {
     }
 
 
-    @Test
+    @Test(description = "3.1.1.1. Test case - Entrance test",
+            groups = {
+                    "checkout",
+                    "smoke"
+            })
     public void entranceTest() {
         assertThatCode(() -> {
             accountPage.clickOnOrderHistoryIcon();
@@ -146,7 +150,11 @@ public class CheckoutTests extends BaseTest {
         }).doesNotThrowAnyException();
     }
 
-    @Test
+    @Test(description = "3.1.1.2. Test case - Check order of one product in stock",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyCheckoutOrderingOneInStockProduct() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -175,7 +183,11 @@ public class CheckoutTests extends BaseTest {
         checkOrderPage(orderPage, checkoutProducts, actualOrderDate);
     }
 
-    @Test
+    @Test(description = "3.1.1.3. Test case - Check order of more than one product in stock",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyCheckoutOrderingMultipleInStockProducts() {
         navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -212,7 +224,11 @@ public class CheckoutTests extends BaseTest {
         checkOrderPage(orderPage, checkoutProducts, actualOrderDate);
     }
 
-    @Test
+    @Test(description = "3.1.2.1. Test case - Check if \"State\" dropdown drops its value after changing \"Country\" value",
+            groups = {
+                    "checkout",
+                    "smoke"
+            })
     public void verifyThatStateDropdownValueDropsAfterCountryValueChangedOnCartPage() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -224,7 +240,11 @@ public class CheckoutTests extends BaseTest {
         assertEquals(cartPage.getSelectedState(), DESELECTED_OPTION);
     }
 
-    @Test
+    @Test(description = "3.2.1.1. Test case - Check adding zero products",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyAddingProductToCartWithZeroQuantity() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -235,7 +255,11 @@ public class CheckoutTests extends BaseTest {
                 .isThrownBy(() -> productPage.clickOnAddToCartButton());
     }
 
-    @Test
+    @Test(description = "3.2.1.2. Test case - Check adding more products than in stock",
+            groups = {
+                    "checkout",
+                    "regression"
+            })
     public void verifyAddingMoreProductsToCartThanInStock() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(quantityLimitedProductName)
@@ -250,17 +274,28 @@ public class CheckoutTests extends BaseTest {
                 .getProductNames()[0].contains("***"));
     }
 
-    @Test
+    @Test(description = "3.2.1.3. Test case - Check adding out of stock products",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyAddingOutOfStockProductToCart() {
         ProductPage productPage = navigation.clickOnApparelAndAccessoriesCategoryPageLink()
                 .getProductCard(outOfStockProductName)
                 .clickOnProductTitle();
 
-        assertThatExceptionOfType(PageNavigationException.class)
+        assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> productPage.clickOnAddToCartButton());
+
+        assertThatCode(() -> productPage.clickOnOutOfStockButton())
+                .doesNotThrowAnyException();
     }
 
-    @Test
+    @Test(description = "3.2.2.1. Test case - Check preceding to checkout after setting quantity to zero",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyPrecedingToCheckoutAfterSettingProductQuantityToZero() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -269,13 +304,17 @@ public class CheckoutTests extends BaseTest {
 
         cartPage.getProductTable().getProduct(defaultProductName).setQuantity(0);
 
-        assertThatExceptionOfType(PageNavigationException.class)
+        assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> cartPage.clickOnCheckoutButton());
         assertThat(cartPage.getProductTable().getProductNames())
                 .isEmpty();
     }
 
-    @Test
+    @Test(description = "3.2.2.2. Test case - Check preceding to checkout after setting quantity to more than in stock",
+            groups = {
+                    "checkout",
+                    "regression"
+            })
     public void verifyPrecedingToCheckoutAfterSettingProductQuantityToMoreThanInStock() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(quantityLimitedProductName)
@@ -295,7 +334,11 @@ public class CheckoutTests extends BaseTest {
                 .getProductNames()[0].contains("***"));
     }
 
-    @Test
+    @Test(description = "3.2.2.3. Test case - Check preceding to checkout with unselected \"State\"",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyPrecedingToCheckoutWithUnselectedState() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -309,7 +352,11 @@ public class CheckoutTests extends BaseTest {
         assertEquals(cartPage.getSelectedState(), DESELECTED_OPTION);
     }
 
-    @Test
+    @Test(description = "3.2.3.1. Test case - Check adding product to cart being logged out",
+            groups = {
+                    "checkout",
+                    "critical-path"
+            })
     public void verifyAddingProductToCartBeingLoggedOut() {
         logout();
 

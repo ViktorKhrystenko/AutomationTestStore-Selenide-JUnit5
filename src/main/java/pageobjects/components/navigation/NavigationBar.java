@@ -1,5 +1,6 @@
 package pageobjects.components.navigation;
 
+import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -41,31 +42,35 @@ public class NavigationBar extends BasePage {
 
 
     @Step("Click on 'Login or register' link")
-    public LoginPage clickOnLoginOrRegisterLink() {
+    public LoginPage clickOnLoginOrRegisterLink() throws PageNavigationException {
         loginOrRegisterLink.click();
         waitUntilPageIsLoaded();
         return new LoginPage(driver);
     }
 
-    public AccountPage clickOnAccountPageLink() {
+    @Step("Click on 'Account page' link")
+    public AccountPage clickOnAccountPageLink() throws PageNavigationException {
         accountPageLink.click();
         waitUntilPageIsLoaded();
         return new AccountPage(driver);
     }
 
-    public HomePage clickOnHomePageLink() {
+    @Step("Click on 'Home page' link")
+    public HomePage clickOnHomePageLink() throws PageNavigationException {
         homePageLink.click();
         waitUntilPageIsLoaded();
         return new HomePage(driver);
     }
 
-    public CartPage clickOnCartPageLink() {
+    @Step("Click on 'Cart page' link")
+    public CartPage clickOnCartPageLink() throws PageNavigationException {
         cartPageLink.click();
         waitUntilPageIsLoaded();
         return new CartPage(driver);
     }
 
-    public ApparelAndAccessoriesCategoryPage clickOnApparelAndAccessoriesCategoryPageLink() {
+    @Step("Click on 'Apparel & Accessories' category link")
+    public ApparelAndAccessoriesCategoryPage clickOnApparelAndAccessoriesCategoryPageLink() throws PageNavigationException {
         apparelAndAccessoriesCategoryLink.click();
         waitUntilPageIsLoaded();
         return new ApparelAndAccessoriesCategoryPage(driver);

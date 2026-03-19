@@ -40,7 +40,7 @@ public abstract class BasePage {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
 
-    protected void selectRandomOption(By selectLocator, DataGenerator generator) {
+    protected void selectRandomOption(By selectLocator, DataGenerator generator) throws UnableToSelectOptionException {
         FluentWait<WebDriver> fWait = new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofMillis(500))
@@ -69,7 +69,7 @@ public abstract class BasePage {
         });
     }
 
-    protected void selectOptionByVisibleText(By selectLocator, String optionVisibleText) {
+    protected void selectOptionByVisibleText(By selectLocator, String optionVisibleText) throws UnableToSelectOptionException {
         Allure.addAttachment("Selected option", optionVisibleText);
         int counter = 0;
         while (counter < 3) {
@@ -108,7 +108,7 @@ public abstract class BasePage {
     }
 
 
-    protected void checkLocation(String regex, String pageName) {
+    protected void checkLocation(String regex, String pageName) throws PageNavigationException {
         String currentUrl = driver.getCurrentUrl();
         if (!doesStringMatchRegex(currentUrl, regex)) {
             throw new PageNavigationException(pageName, regex, currentUrl);

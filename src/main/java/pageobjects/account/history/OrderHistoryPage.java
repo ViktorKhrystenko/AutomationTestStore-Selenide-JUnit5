@@ -1,5 +1,7 @@
 package pageobjects.account.history;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +29,7 @@ public class OrderHistoryPage extends BasePage {
     private final List<Order> orderList;
 
 
-    public OrderHistoryPage(WebDriver driver) {
+    public OrderHistoryPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
@@ -57,7 +59,8 @@ public class OrderHistoryPage extends BasePage {
         return orderList.get(orderIndex).getTotal();
     }
 
-    public OrderPage getToOrderDetails(int orderIndex) {
+    @Step("Click on \"View\" button of {0} order")
+    public OrderPage getToOrderDetails(int orderIndex) throws PageNavigationException {
         int orderId = getOrderId(orderIndex);
         getViewDetailsButton(orderIndex).click();
         waitUntilPageIsLoaded();
@@ -81,7 +84,8 @@ public class OrderHistoryPage extends BasePage {
         return orderList.get(0).getTotal();
     }
 
-    public OrderPage getToOrderDetailsOfMostResentOrder() {
+    @Step("Click on \"View\" button of the most resent order")
+    public OrderPage getToOrderDetailsOfMostResentOrder() throws PageNavigationException {
         int orderId = getOrderIdOfMostResentOrder();
         getViewDetailsButton(0).click();
         waitUntilPageIsLoaded();

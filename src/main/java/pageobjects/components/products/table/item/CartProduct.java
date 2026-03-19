@@ -1,5 +1,7 @@
 package pageobjects.components.products.table.item;
 
+import exceptions.WrongProductPriceCalculationException;
+import io.qameta.allure.Allure;
 import lombok.Getter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -38,12 +40,52 @@ public class CartProduct extends Product {
         this.cartPage = cartPage;
         this.cartTableRow = cartTableRow;
         reLocateElements();
-        setQuantity(getQuantityFromField());
+        setInitializationQuantity(getQuantityFromField());
     }
 
 
     @Override
-    public void setQuantity(long quantity) {
+    public void setQuantity(long quantity) throws WrongProductPriceCalculationException {
+        Allure.step("Set quantity of \"" + productName + "\" product to " + quantity,
+                () -> setInitializationQuantity(quantity));
+    }
+
+    @Override
+    protected void parseTableRowIntoFields(WebElement tableRow) {
+        List<String> productFields = Arrays.stream(tableRow.getDomProperty("innerText")
+                .split("\t")).toList();
+        // sublist to remove first image column
+        productFields = productFields.subList(1, productFields.size());
+        productName = productFields.get(0).replace("\n", "");
+        modelNumber = productFields.get(1);
+        unitPrice = parsePriceStringToDouble(productFields.get(2));
+    }
+
+
+    public CartPage removeProductFromCart() {
+        return Allure.step("Remove \"" + productName + "\" product from cart",
+                () -> {
+                    removeProductButton.click();
+                    waitUntilPageIsLoaded();
+                    cartPage.getProductTable().getProductNames();
+                    return cartPage;
+                });
+    }
+
+
+    private void reLocateElements() {
+        cartTableRow = driver.findElement(By.xpath(String.format(
+                PRODUCT_TABLE_ROW_LOCATOR_FORMAT_PATTERN, modelNumber)));
+        quantityField = cartTableRow.findElement(QUANTITY_FIELD_LOCATOR);
+        totalPriceElement = cartTableRow.findElement(TOTAL_PRICE_ELEMENT_LOCATOR);
+        removeProductButton = cartTableRow.findElement(REMOVE_PRODUCT_BUTTON_LOCATOR);
+    }
+
+    private long getQuantityFromField() {
+        return Long.parseLong(quantityField.getDomProperty("value"));
+    }
+
+    private void setInitializationQuantity(long quantity) throws WrongProductPriceCalculationException {
         this.quantity = quantity;
         if (quantityField != null) {
             long quantityOnField = getQuantityFromField();
@@ -65,36 +107,5 @@ public class CartProduct extends Product {
             double totalPriceOnPage = parsePriceStringToDouble(totalPriceElement.getText());
             checkTotalPrice(totalPriceOnPage);
         }
-    }
-
-    @Override
-    protected void parseTableRowIntoFields(WebElement tableRow) {
-        List<String> productFields = Arrays.stream(tableRow.getDomProperty("innerText")
-                .split("\t")).toList();
-        // sublist to remove first image column
-        productFields = productFields.subList(1, productFields.size());
-        productName = productFields.get(0).replace("\n", "");
-        modelNumber = productFields.get(1);
-        unitPrice = parsePriceStringToDouble(productFields.get(2));
-    }
-
-
-    public CartPage removeProductFromCart() {
-        removeProductButton.click();
-        waitUntilPageIsLoaded();
-        return cartPage;
-    }
-
-
-    private void reLocateElements() {
-        cartTableRow = driver.findElement(By.xpath(String.format(
-                PRODUCT_TABLE_ROW_LOCATOR_FORMAT_PATTERN, modelNumber)));
-        quantityField = cartTableRow.findElement(QUANTITY_FIELD_LOCATOR);
-        totalPriceElement = cartTableRow.findElement(TOTAL_PRICE_ELEMENT_LOCATOR);
-        removeProductButton = cartTableRow.findElement(REMOVE_PRODUCT_BUTTON_LOCATOR);
-    }
-
-    private long getQuantityFromField() {
-        return Long.parseLong(quantityField.getDomProperty("value"));
     }
 }

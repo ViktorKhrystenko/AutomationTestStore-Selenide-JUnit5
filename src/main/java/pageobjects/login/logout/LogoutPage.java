@@ -1,5 +1,6 @@
 package pageobjects.login.logout;
 
+import exceptions.PageNavigationException;
 import org.openqa.selenium.WebDriver;
 import pageobjects.BasePage;
 
@@ -12,7 +13,7 @@ public class LogoutPage extends BasePage {
     private static final String PAGE_NAME = "Logout page";
 
 
-    public LogoutPage(WebDriver driver) {
+    public LogoutPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
     }

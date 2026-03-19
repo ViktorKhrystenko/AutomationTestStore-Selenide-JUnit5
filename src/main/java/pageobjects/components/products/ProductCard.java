@@ -1,5 +1,7 @@
 package pageobjects.components.products;
 
+import exceptions.PageNavigationException;
+import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,22 +32,25 @@ public class ProductCard extends BasePage {
     }
 
 
-    public ProductPage clickOnProductTitle() {
+    public ProductPage clickOnProductTitle() throws PageNavigationException {
         String productName = getProductName();
-        String productTitleHref = productTitleElement.getDomProperty("href");
-        int productId = Integer.parseInt(replaceByRegex(
-                productTitleHref,
-                PRODUCT_LINK_HREF_PATTERN,
-                ""));
-        productTitleElement.click();
-        waitUntilPageIsLoaded();
-        Optional<Integer> path = getPathFromHref(productTitleHref);
-        if (path.isEmpty()) {
-            return new ProductPage(driver, productId, productName);
-        }
-        else {
-            return new ProductPage(driver, path.get(), productId, productName);
-        }
+        return Allure.step("Click on \"" + productName + "\" product title",
+                () -> {
+                    String productTitleHref = productTitleElement.getDomProperty("href");
+                    int productId = Integer.parseInt(replaceByRegex(
+                            productTitleHref,
+                            PRODUCT_LINK_HREF_PATTERN,
+                            ""));
+                    productTitleElement.click();
+                    waitUntilPageIsLoaded();
+                    Optional<Integer> path = getPathFromHref(productTitleHref);
+                    if (path.isEmpty()) {
+                        return new ProductPage(driver, productId, productName);
+                    }
+                    else {
+                        return new ProductPage(driver, path.get(), productId, productName);
+                    }
+                });
     }
 
     public String getProductName() {
@@ -60,11 +65,9 @@ public class ProductCard extends BasePage {
         String pathParameter = href.substring(
                 href.indexOf("path="),
                 href.length() - 1);
-        System.out.println(pathParameter);
         pathParameter = pathParameter.substring(
                 0,
                 pathParameter.indexOf('&'));
-        System.out.println(pathParameter);
         int path = Integer.parseInt(leftOnlyCharactersInRange(pathParameter, '0', '9'));
         return Optional.of(path);
     }

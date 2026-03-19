@@ -1,6 +1,7 @@
 package pageobjects.registration;
 
 import dto.User;
+import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -40,7 +41,7 @@ public class RegistrationPage extends BasePage {
     private WebElement registrationErrorAlert;
 
 
-    public RegistrationPage(WebDriver driver) {
+    public RegistrationPage(WebDriver driver) throws PageNavigationException {
         super(driver);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
         PageFactory.initElements(driver, this);
@@ -48,9 +49,11 @@ public class RegistrationPage extends BasePage {
 
 
     public RegistrationPage fill(RegistrationField field, String data) {
-        enterText(field.getLocator(), data);
-        Allure.step(String.format("Fill '%s' field", field.name()));
-        return this;
+        return Allure.step(String.format("Fill '%s' field", field.name()),
+                () -> {
+                    enterText(field.getLocator(), data);
+                    return this;
+                });
     }
 
 
@@ -144,7 +147,7 @@ public class RegistrationPage extends BasePage {
 
 
     @Step("Click on 'Continue' button")
-    public SuccessfulRegistrationPage clickOnContinueButton() {
+    public SuccessfulRegistrationPage clickOnContinueButton() throws PageNavigationException {
         continueButton.click();
         waitUntilPageIsLoaded();
         return new SuccessfulRegistrationPage(driver);
