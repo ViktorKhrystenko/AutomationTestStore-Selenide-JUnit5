@@ -11,9 +11,9 @@ import tests.BaseTest;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.REGISTRATION_BASE_URL;
-import static constants.BaseUrls.SUCCESSFUL_REGISTRATION_BASE_URL;
-import static constants.BaseUrls.HOME_BASE_URL;
+import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.SUCCESSFUL_REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.HOME_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 

@@ -41,17 +41,26 @@ public class StringFormatHelper {
 
     public static double parsePriceStringToDouble(String priceString) {
         // substring to remove first '$' symbol
-        return round(Double.parseDouble(priceString.substring(1)), 2);
+        return round(Double.parseDouble(
+                priceString.substring(1)
+                        .replace(",", "")),
+                2);
     }
 
     public static String leftOnlyCharactersInRange(String stringToEdit, char lowerBoundChar, char upperBoundChar) {
         StringBuilder editedString = new StringBuilder(stringToEdit);
         for (int i = editedString.length() - 1; i >= 0; i--) {
             if (editedString.charAt(i) < lowerBoundChar
-                    & editedString.charAt(i) > upperBoundChar) {
+                    || editedString.charAt(i) > upperBoundChar) {
                 editedString.deleteCharAt(i);
             }
         }
         return editedString.toString();
+    }
+
+    public static String replaceByRegex(String targetString, String regexPattern, String newString) {
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(targetString);
+        return matcher.replaceAll(newString);
     }
 }

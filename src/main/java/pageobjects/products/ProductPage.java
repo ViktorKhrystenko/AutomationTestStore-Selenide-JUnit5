@@ -7,10 +7,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import static constants.BaseUrls.PRODUCT_BASE_URL;
+import static constants.url.BaseUrlFormatPatterns.PRODUCT_PAGE_FORMAT_PATTERN;
+import static constants.url.BaseUrlFormatPatterns.PRODUCT_WITH_PATH_PAGE_FORMAT_PATTERN;
+import static constants.url.BaseUrlRegexPatterns.PRODUCT_PAGE_REGEX_PATTERN;
 
 import static utils.StringFormatHelper.leftOnlyCharactersInRange;
 
@@ -33,14 +32,23 @@ public class ProductPage extends BasePage {
 
     public ProductPage(WebDriver driver, int productId, String productName) {
         super(driver);
-        BASE_URL = PRODUCT_BASE_URL + String.valueOf(productId);
+        BASE_URL = String.format(PRODUCT_PAGE_FORMAT_PATTERN, productId);
         PAGE_NAME = String.format("%s product page", productName);
-        checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
+        checkLocation(PRODUCT_PAGE_REGEX_PATTERN, PAGE_NAME);
+        PageFactory.initElements(driver, this);
+    }
+
+    public ProductPage(WebDriver driver, int path, int productId, String productName) {
+        super(driver);
+        BASE_URL = String.format(PRODUCT_WITH_PATH_PAGE_FORMAT_PATTERN, path, productId);
+        PAGE_NAME = String.format("%s product page", productName);
+        checkLocation(PRODUCT_PAGE_REGEX_PATTERN, PAGE_NAME);
         PageFactory.initElements(driver, this);
     }
 
 
     public ProductPage setQuantity(long quantity) {
+        quantityField.clear();
         quantityField.sendKeys(String.valueOf(quantity));
         return this;
     }
@@ -52,23 +60,27 @@ public class ProductPage extends BasePage {
     }
 
 
-    public Optional<Long> getInStockQuantity() {
+    public long getInStockQuantity() throws IllegalStateException {
         if (!inStockElement.isDisplayed()) {
-            return Optional.empty();
+            throw new IllegalStateException("There is no in stock element displayed on product page with url: " +
+                    driver.getCurrentUrl());
         }
         String inStockString = inStockElement.getText().split("\n")[1];
         if (inStockString.equals("In Stock")) {
-            return Optional.empty();
+            throw new IllegalStateException("Exact in stock quantity is not specified on product page with url: " +
+                    driver.getCurrentUrl());
         }
-        return Optional.of(Long.parseLong(
-                inStockString.substring(0, inStockString.indexOf("In Stock")).trim()));
+        return Long.parseLong(inStockString
+                .substring(0, inStockString.indexOf("In Stock"))
+                .trim());
     }
 
-    public Optional<Long> getQuantityPerOrderLimit() {
+    public long getQuantityPerOrderLimit() throws IllegalStateException {
         if (!quantityPerOrderLimitElement.isDisplayed()) {
-            return Optional.empty();
+            throw new IllegalStateException("There is no quantity per order limit element displayed on product page with url: " +
+                    driver.getCurrentUrl());
         }
         String qualityPerOrderString = leftOnlyCharactersInRange(inStockElement.getText(), '0', '9');
-        return Optional.of(Long.parseLong(qualityPerOrderString));
+        return Long.parseLong(qualityPerOrderString);
     }
 }

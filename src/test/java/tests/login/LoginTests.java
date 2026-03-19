@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 import static utils.PropertiesLoader.loadProperties;
 
 import static constants.ResourcesPaths.LOGIN_TEST_DATA_PATH;
-import static constants.BaseUrls.LOGIN_BASE_URL;
-import static  constants.BaseUrls.ACCOUNT_BASE_URL;
+import static constants.url.BaseUrls.LOGIN_BASE_URL;
+import static  constants.url.BaseUrls.ACCOUNT_BASE_URL;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.testng.Assert.*;

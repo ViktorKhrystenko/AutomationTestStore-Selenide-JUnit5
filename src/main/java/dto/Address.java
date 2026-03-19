@@ -29,7 +29,7 @@ public class Address {
     public Address(WebElement fullNameElement, WebElement addressElement) {
         String[] firstAndLastNames = fullNameElement.getText().split("\n");
         String[] addressFields = addressElement.getText().split("\n");
-        fullName = firstAndLastNames[0] + " " + firstAndLastNames[1];
+        fullName = getFullName(firstAndLastNames[0], firstAndLastNames[1]);
         address = addressFields[0];
         location = addressFields[1];
         country = addressFields[2];
@@ -38,6 +38,10 @@ public class Address {
 
     public static String getLocation(String city, String zipCode, String regionState) {
         return city + regionState + zipCode;
+    }
+
+    public static String getFullName(String firstName, String lastName) {
+        return firstName + " " + lastName;
     }
 
 

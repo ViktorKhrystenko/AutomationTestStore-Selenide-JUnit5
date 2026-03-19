@@ -18,6 +18,8 @@ import static constants.FormValues.DESELECTED_OPTION;
 import static utils.StringFormatHelper.doesStringMatchRegex;
 
 public abstract class BasePage {
+    private static final By ROOT_HTML_ELEMENT = By.tagName("html");
+
     protected static final By PARENT_ELEMENT_LOCATOR = By.xpath("..");
 
     protected WebDriver driver;
@@ -32,6 +34,10 @@ public abstract class BasePage {
 
     protected void enterText(By locator, String text) {
         driver.findElement(locator).sendKeys(text);
+    }
+
+    protected String getTextFromElementLocated(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
 
     protected void selectRandomOption(By selectLocator, DataGenerator generator) {
@@ -85,10 +91,22 @@ public abstract class BasePage {
         throw new UnableToSelectOptionException(optionVisibleText, selectLocator.toString());
     }
 
+    protected WebElement getSelectedOption(By selectLocator) {
+        WebElement selectElement = driver.findElement(selectLocator);
+        Select select = new Select(selectElement);
+        return select.getFirstSelectedOption();
+    }
+
+
     protected void waitUntilPageIsLoaded() {
         wait.until(d -> ((JavascriptExecutor) d)
                 .executeScript("return document.readyState").equals("complete"));
     }
+
+    protected void waitUntilPageStartsRefreshing() {
+        wait.until(ExpectedConditions.stalenessOf(driver.findElement(ROOT_HTML_ELEMENT)));
+    }
+
 
     protected void checkLocation(String regex, String pageName) {
         String currentUrl = driver.getCurrentUrl();

@@ -1,21 +1,21 @@
 package pageobjects.checkout;
 
 import dto.Address;
-import lombok.Getter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
-import pageobjects.account.history.OrderPage;
-import pageobjects.components.producttable.ProductTable;
+import pageobjects.PageWithProductTable;
+import pageobjects.components.products.table.ProductTable;
+import pageobjects.components.products.table.item.CheckoutConfirmProduct;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.CHECKOUT_CONFIRM_BASE_URL;
+import static constants.url.BaseUrls.CHECKOUT_CONFIRM_BASE_URL;
 
-public class CheckoutConfirmPage extends BasePage {
+public class CheckoutConfirmPage extends BasePage implements PageWithProductTable<CheckoutConfirmProduct> {
     private static final String BASE_URL = CHECKOUT_CONFIRM_BASE_URL;
     private static final String PAGE_NAME = "Checkout confirm page";
 
@@ -43,8 +43,7 @@ public class CheckoutConfirmPage extends BasePage {
     @FindBy(id = "checkout_btn")
     private WebElement confirmOrderButton;
 
-    @Getter
-    private ProductTable<OrderPage.Product> productsInCart;
+    private ProductTable<CheckoutConfirmProduct> productsInCart;
 
 
     public CheckoutConfirmPage(WebDriver driver) {
@@ -53,8 +52,14 @@ public class CheckoutConfirmPage extends BasePage {
         productsInCart = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
                 SUBTOTAL_PRICE_ELEMENT_LOCATOR, SHIPPING_PRICE_ELEMENT_LOCATOR,
                 TOTAL_PRICE_ELEMENT_LOCATOR,
-                productTableRow -> new OrderPage.Product(driver, productTableRow));
+                productTableRow -> new CheckoutConfirmProduct(driver, productTableRow));
         PageFactory.initElements(driver, this);
+    }
+
+
+    @Override
+    public ProductTable<CheckoutConfirmProduct> getProductTable() {
+        return productsInCart;
     }
 
 
@@ -68,6 +73,7 @@ public class CheckoutConfirmPage extends BasePage {
 
     public SuccessfulCheckoutPage clickOnConfirmOrderButton() {
         confirmOrderButton.click();
+        waitUntilPageStartsRefreshing();
         waitUntilPageIsLoaded();
         return new SuccessfulCheckoutPage(driver);
     }

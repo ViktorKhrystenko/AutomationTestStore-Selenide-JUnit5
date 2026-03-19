@@ -1,16 +1,15 @@
 package pageobjects.products;
 
+import exceptions.ProductCardNotFoundException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageobjects.BasePage;
+import pageobjects.components.products.ProductCard;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
-
-import static constants.BaseUrls.PRODUCT_BASE_URL;
 
 public abstract class PageWithProducts extends BasePage {
     private static final By PRODUCT_CARD_LOCATOR = By.xpath(
@@ -30,14 +29,14 @@ public abstract class PageWithProducts extends BasePage {
     }
 
 
-    public Optional<ProductCard> getProductCard(String productName) {
+    public ProductCard getProductCard(String productName) {
         initProductCardsList();
         for (ProductCard productCard: productCards) {
-            if (productCard.getProductName().equals(productName)) {
-                return Optional.of(productCard);
+            if (productCard.getProductName().equalsIgnoreCase(productName)) {
+                return productCard;
             }
         }
-        return Optional.empty();
+        throw new ProductCardNotFoundException(productName, PAGE_NAME, driver.getCurrentUrl());
     }
 
 
@@ -46,36 +45,6 @@ public abstract class PageWithProducts extends BasePage {
         List<WebElement> productCardsElements = driver.findElements(PRODUCT_CARD_LOCATOR);
         for (WebElement productCardElement: productCardsElements) {
             productCards.add(new ProductCard(driver, productCardElement));
-        }
-    }
-
-
-    public static class ProductCard extends BasePage {
-        private static final By PRODUCT_TITLE_LOCATOR = By.className("prdocutname");
-
-        private WebElement productCardElement;
-
-        private WebElement productTitleElement;
-
-
-        public ProductCard(WebDriver driver, WebElement productCardElement) {
-            super(driver);
-            this.productCardElement = productCardElement;
-            productTitleElement = productCardElement.findElement(PRODUCT_TITLE_LOCATOR);
-        }
-
-
-        public ProductPage clickOnProductTitle() {
-            productTitleElement.click();
-            String productName = getProductName();
-            int productId = Integer.parseInt(productTitleElement.getDomProperty("href")
-                    .replace(PRODUCT_BASE_URL, ""));
-            waitUntilPageIsLoaded();
-            return new ProductPage(driver, productId, productName);
-        }
-
-        public String getProductName() {
-            return productTitleElement.getText();
         }
     }
 }

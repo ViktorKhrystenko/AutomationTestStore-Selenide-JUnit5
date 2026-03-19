@@ -5,7 +5,7 @@ import pageobjects.BasePage;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.LOGOUT_BASE_URL;
+import static constants.url.BaseUrls.LOGOUT_BASE_URL;
 
 public class LogoutPage extends BasePage {
     private static final String BASE_URL = LOGOUT_BASE_URL;

@@ -9,7 +9,7 @@ import pageobjects.account.history.OrderPage;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.SUCCESSFUL_CHECKOUT_BASE_URL;
+import static constants.url.BaseUrls.SUCCESSFUL_CHECKOUT_BASE_URL;
 
 public class SuccessfulCheckoutPage extends BasePage {
     private static final String BASE_URL = SUCCESSFUL_CHECKOUT_BASE_URL;

@@ -1,15 +1,17 @@
 package pageobjects.account;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 import pageobjects.account.history.OrderHistoryPage;
+import pageobjects.login.logout.LogoutPage;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.ACCOUNT_BASE_URL;
+import static constants.url.BaseUrls.ACCOUNT_BASE_URL;
 
 public class AccountPage extends BasePage {
     private static final String BASE_URL = ACCOUNT_BASE_URL;
@@ -17,6 +19,9 @@ public class AccountPage extends BasePage {
 
     @FindBy(xpath = "//a[@data-original-title='Order history']")
     private WebElement orderHistoryIcon;
+
+    @FindBy(xpath = "//ul[@class='side_account_list']//a[contains(text(), 'Logoff')]")
+    private WebElement logoffLink;
 
 
     public AccountPage(WebDriver driver) {
@@ -30,5 +35,12 @@ public class AccountPage extends BasePage {
         orderHistoryIcon.click();
         waitUntilPageIsLoaded();
         return new OrderHistoryPage(driver);
+    }
+
+    @Step("Click on 'Logoff' link")
+    public LogoutPage clickOnLogoffLink() {
+        logoffLink.click();
+        waitUntilPageIsLoaded();
+        return new LogoutPage(driver);
     }
 }

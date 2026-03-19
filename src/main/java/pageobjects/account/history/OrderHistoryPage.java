@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.ORDER_HISTORY_BASE_URL;
+import static constants.url.BaseUrls.ORDER_HISTORY_BASE_URL;
 
 import static utils.StringFormatHelper.getTextAfterColon;
 import static utils.StringFormatHelper.parsePriceStringToDouble;
@@ -21,7 +21,7 @@ public class OrderHistoryPage extends BasePage {
     private static final String BASE_URL = ORDER_HISTORY_BASE_URL;
     private static final String PAGE_NAME = "Order history page";
 
-    @FindBy(className = "container-fluid mt20")
+    @FindBy(xpath = "//div[@class='container-fluid mt20']")
     private List<WebElement> orderElementsList;
 
     private final List<Order> orderList;

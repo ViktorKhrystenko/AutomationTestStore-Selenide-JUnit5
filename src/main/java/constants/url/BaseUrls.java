@@ -1,4 +1,4 @@
-package constants;
+package constants.url;
 
 public class BaseUrls {
     public static final String HOME_BASE_URL = "https://automationteststore.com/";

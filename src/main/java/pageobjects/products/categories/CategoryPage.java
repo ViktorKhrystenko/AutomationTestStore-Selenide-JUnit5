@@ -3,7 +3,7 @@ package pageobjects.products.categories;
 import org.openqa.selenium.WebDriver;
 import pageobjects.products.PageWithProducts;
 
-import static constants.BaseUrls.CATEGORY_BASE_URL;
+import static constants.url.BaseUrls.CATEGORY_BASE_URL;
 
 public abstract class CategoryPage extends PageWithProducts {
 

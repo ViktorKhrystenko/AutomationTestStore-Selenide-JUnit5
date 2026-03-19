@@ -11,7 +11,7 @@ import pageobjects.registration.RegistrationPage;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.LOGIN_BASE_URL;
+import static constants.url.BaseUrls.LOGIN_BASE_URL;
 import static utils.StringFormatHelper.trimCloseAlertCross;
 
 public class LoginPage extends BasePage {

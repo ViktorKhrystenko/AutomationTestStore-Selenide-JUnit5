@@ -3,7 +3,7 @@ package pageobjects.products.home;
 import org.openqa.selenium.WebDriver;
 import pageobjects.products.PageWithProducts;
 
-import static constants.BaseUrls.HOME_BASE_URL;
+import static constants.url.BaseUrls.HOME_BASE_URL;
 
 public class HomePage extends PageWithProducts {
 

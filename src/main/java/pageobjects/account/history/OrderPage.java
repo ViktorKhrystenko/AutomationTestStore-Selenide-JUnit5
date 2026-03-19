@@ -1,31 +1,29 @@
 package pageobjects.account.history;
 
 import dto.Address;
-import exceptions.WrongProductPriceCalculationException;
-import lombok.Getter;
+import dto.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
-import pageobjects.components.producttable.ProductTable;
+import pageobjects.PageWithProductTable;
+import pageobjects.components.products.table.ProductTable;
+import pageobjects.components.products.table.item.OrderPageProduct;
 import utils.DateUtil;
 
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.ORDER_BASE_URL;
+import static constants.url.BaseUrls.ORDER_BASE_URL;
 
 import static constants.DateTimePatterns.ORDER_PAGE_PATTERN;
 
-import static utils.StringFormatHelper.parsePriceStringToDouble;
-
-import static utils.FloatNumberRounder.round;
-
-public class OrderPage extends BasePage {
+public class OrderPage extends BasePage implements PageWithProductTable<OrderPageProduct> {
     private static final By PRODUCT_TABLE_ROWS_LOCATOR = By.cssSelector("table.invoice_products tr:has(> td)");
 
     private static final By SUBTOTAL_PRICE_ELEMENT_LOCATOR =
@@ -51,8 +49,7 @@ public class OrderPage extends BasePage {
     @FindBy(xpath = "//th[text()='Date Added']/parent::tr/following-sibling::tr/td[1]")
     private WebElement orderDateElement;
 
-    @Getter
-    private ProductTable<Product> orderedProducts;
+    private ProductTable<OrderPageProduct> orderedProducts;
 
 
     public OrderPage(WebDriver driver, int orderId) {
@@ -64,10 +61,15 @@ public class OrderPage extends BasePage {
         orderedProducts = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
                 SUBTOTAL_PRICE_ELEMENT_LOCATOR, SHIPPING_PRICE_ELEMENT_LOCATOR,
                 TOTAL_PRICE_ELEMENT_LOCATOR,
-                productTableRow -> new Product(driver, productTableRow));
+                productTableRow -> new OrderPageProduct(driver, productTableRow));
         PageFactory.initElements(driver, this);
     }
 
+
+    @Override
+    public ProductTable<OrderPageProduct> getProductTable() {
+        return orderedProducts;
+    }
 
     public String getEmail() {
         List<String> orderFirstColumnText = Arrays.stream(
@@ -89,63 +91,24 @@ public class OrderPage extends BasePage {
     }
 
 
-    @Getter
-    public static class Product extends BasePage {
-        protected String productName;
-        protected String modelNumber;
-        protected double unitPrice;
-        protected double totalPrice;
-        protected long quantity;
+    public boolean checkUserInfoOnOrderPage(User user, String state, String country) {
+        String actualLocation = Address.getLocation(user.getCity(), user.getZipCode(), state);
+        String actualFullName = Address.getFullName(user.getFirstName(), user.getLastName());
+        String emailFromPage = getEmail();
+        Address shippingAddress = getShippingAddress();
+        Address paymentAddress = getPaymentAddress();
+        return user.getEmail().equals(emailFromPage)
+                && actualFullName.equals(shippingAddress.getFullName())
+                && actualFullName.equals(paymentAddress.getFullName())
+                && actualLocation.equals(shippingAddress.getLocation())
+                && actualLocation.equals(paymentAddress.getLocation())
+                && user.getAddress_1().equals(shippingAddress.getAddress())
+                && user.getAddress_1().equals(paymentAddress.getAddress())
+                && country.equals(shippingAddress.getCountry())
+                && country.equals(paymentAddress.getCountry());
+    }
 
-
-        public Product(WebDriver driver, String productName, String modelNumber,
-                       double unitPrice, long quantity, double totalPrice) {
-            super(driver);
-            this.productName = productName;
-            this.modelNumber = modelNumber;
-            this.unitPrice = round(unitPrice, 2);
-            setQuantity(quantity);
-            checkTotalPrice(totalPrice);
-        }
-
-        public Product(WebDriver driver, String productName, String modelNumber,
-                       double unitPrice, long quantity) {
-            super(driver);
-            this.productName = productName;
-            this.modelNumber = modelNumber;
-            this.unitPrice = round(unitPrice, 2);
-            setQuantity(quantity);
-        }
-
-        public Product(WebDriver driver, WebElement tableRow) {
-            super(driver);
-            parseTableRowIntoFields(tableRow);
-        }
-
-
-        public void setQuantity(long quantity) {
-            this.quantity = quantity;
-            this.totalPrice = round(unitPrice * quantity, 2);
-        }
-
-
-        protected void checkTotalPrice(double totalPrice) {
-            if (this.totalPrice != totalPrice) {
-                throw new WrongProductPriceCalculationException(
-                        this.productName, this.unitPrice, this.quantity, this.totalPrice, totalPrice);
-            }
-        }
-
-
-        protected void parseTableRowIntoFields(WebElement tableRow) {
-            List<String> productFields = Arrays.stream(tableRow.getText().split("\t")).toList();
-            // sublist to remove first image column
-            productFields = productFields.subList(1, productFields.size());
-            productName = productFields.get(0).split("\n")[0];
-            modelNumber = productFields.get(1);
-            unitPrice = parsePriceStringToDouble(productFields.get(3));
-            setQuantity(Integer.parseInt(productFields.get(2)));
-            checkTotalPrice(parsePriceStringToDouble(productFields.get(4)));
-        }
+    public boolean checkOrderDate(Temporal actualOrderDate, long acceptableSecondsDelta) {
+        return DateUtil.areDatesEqual(getOrderDate(), actualOrderDate, acceptableSecondsDelta);
     }
 }

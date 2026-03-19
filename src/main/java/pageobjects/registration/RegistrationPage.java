@@ -15,7 +15,7 @@ import utils.datagenerator.DataGenerator;
 
 import java.util.regex.Pattern;
 
-import static constants.BaseUrls.REGISTRATION_BASE_URL;
+import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 
@@ -165,12 +165,5 @@ public class RegistrationPage extends BasePage {
     public String getRegistrationErrorMessage() {
         String registrationErrorMessage = registrationErrorAlert.getText();
         return trimCloseAlertCross(registrationErrorMessage);
-    }
-
-
-    private WebElement getSelectedOption(By selectLocator) {
-        WebElement selectElement = driver.findElement(selectLocator);
-        Select select = new Select(selectElement);
-        return select.getFirstSelectedOption();
     }
 }
