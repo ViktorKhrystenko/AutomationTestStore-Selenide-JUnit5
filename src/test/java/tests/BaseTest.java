@@ -9,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import listeners.testng.SeedLoggingListener;
 import utils.datagenerator.DataGenerator;
+import utils.datagenerator.DataGeneratorManager;
 import utils.driver.DriverFactory;
 import utils.driver.DriverManager;
 
@@ -44,5 +45,6 @@ public abstract class BaseTest {
         else {
             generator = new DataGenerator();
         }
+        DataGeneratorManager.setDataGenerator(generator);
     }
 }

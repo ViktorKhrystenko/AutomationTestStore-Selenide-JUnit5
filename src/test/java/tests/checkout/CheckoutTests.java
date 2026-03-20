@@ -235,7 +235,7 @@ public class CheckoutTests extends BaseTest {
                 .clickOnProductTitle()
                 .clickOnAddToCartButton();
 
-        cartPage.selectRandomCountry(generator);
+        cartPage.selectRandomCountry();
 
         assertEquals(cartPage.getSelectedState(), DESELECTED_OPTION);
     }
@@ -344,7 +344,7 @@ public class CheckoutTests extends BaseTest {
                 .getProductCard(defaultProductName)
                 .clickOnProductTitle()
                 .clickOnAddToCartButton()
-                .selectRandomCountry(generator);
+                .selectRandomCountry();
 
         assertThatExceptionOfType(PageNavigationException.class)
                 .isThrownBy(() -> cartPage.clickOnCheckoutButton());

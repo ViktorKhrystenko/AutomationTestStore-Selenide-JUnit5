@@ -225,9 +225,9 @@ public class RegistrationTests extends BaseTest {
             "smoke"
     })
     public void verifyThatRegionStateDropdownValueDropsAfterCountryValueChanged() {
-        registrationPage.selectRandomCountry(generator)
-                .selectRandomRegionState(generator)
-                .selectRandomCountry(generator);
+        registrationPage.selectRandomCountry()
+                .selectRandomRegionState()
+                .selectRandomCountry();
 
         assertThat(registrationPage.getRegionStateDropdownCurrentOption())
                 .isEqualTo(DESELECTED_OPTION);
@@ -977,7 +977,7 @@ public class RegistrationTests extends BaseTest {
                 .fill(LOGIN_NAME_FIELD, user.getLoginName())
                 .fill(PASSWORD_FIELD, user.getPassword())
                 .fill(PASSWORD_CONFIRM_FIELD, user.getPasswordConfirm())
-                .selectRandomCountry(generator);
+                .selectRandomCountry();
 
         assertThatExceptionOfType(PageNavigationException.class)
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());

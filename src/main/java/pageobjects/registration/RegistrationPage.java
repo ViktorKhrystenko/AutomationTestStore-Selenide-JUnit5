@@ -58,14 +58,14 @@ public class RegistrationPage extends BasePage {
 
 
     @Step("Select random option in 'Region / State' dropdown")
-    public RegistrationPage selectRandomRegionState(DataGenerator generator) {
-        selectRandomOption(REGION_STATE_DROPDOWN.getLocator(), generator);
+    public RegistrationPage selectRandomRegionState() {
+        selectRandomOption(REGION_STATE_DROPDOWN.getLocator());
         return this;
     }
 
     @Step("Select random option in 'Country' dropdown")
-    public RegistrationPage selectRandomCountry(DataGenerator generator) {
-        selectRandomOption(COUNTRY_DROPDOWN.getLocator(), generator);
+    public RegistrationPage selectRandomCountry() {
+        selectRandomOption(COUNTRY_DROPDOWN.getLocator());
         return this;
     }
 
@@ -122,8 +122,8 @@ public class RegistrationPage extends BasePage {
         if (user.getPasswordConfirm() != null) {
             fill(PASSWORD_CONFIRM_FIELD, user.getPasswordConfirm());
         }
-        selectRandomCountry(generator);
-        selectRandomRegionState(generator);
+        selectRandomCountry();
+        selectRandomRegionState();
         checkPrivacyPolicyCheckbox();
         return this;
     }

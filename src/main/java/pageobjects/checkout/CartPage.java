@@ -70,8 +70,8 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     }
 
     @Step("Select random country")
-    public CartPage selectRandomCountry(DataGenerator generator) {
-        selectRandomOption(COUNTRY_DROPDOWN_LOCATOR, generator);
+    public CartPage selectRandomCountry() {
+        selectRandomOption(COUNTRY_DROPDOWN_LOCATOR);
         return this;
     }
 
@@ -80,8 +80,8 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     }
 
     @Step("Select random state")
-    public CartPage selectRandomState(DataGenerator generator) {
-        selectRandomOption(STATE_DROPDOWN_LOCATOR, generator);
+    public CartPage selectRandomState() {
+        selectRandomOption(STATE_DROPDOWN_LOCATOR);
         return this;
     }
 

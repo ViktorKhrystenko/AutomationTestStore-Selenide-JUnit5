@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.datagenerator.DataGenerator;
+import utils.datagenerator.DataGeneratorManager;
 
 import java.time.Duration;
 import java.util.List;
@@ -40,7 +41,7 @@ public abstract class BasePage {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
 
-    protected void selectRandomOption(By selectLocator, DataGenerator generator) throws UnableToSelectOptionException {
+    protected void selectRandomOption(By selectLocator) throws UnableToSelectOptionException {
         FluentWait<WebDriver> fWait = new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofMillis(500))
@@ -57,7 +58,7 @@ public abstract class BasePage {
                             & !option.getText().equals(selectedOption))
                     .toList();
             randomOptions.get(0).isEnabled();
-            WebElement randomOption = generator.selectRandomOption(randomOptions);
+            WebElement randomOption = DataGeneratorManager.getDataGenerator().selectRandomOption(randomOptions);
             String optionVisibleText = randomOption.getText();
             selectOptionByVisibleText(selectLocator, optionVisibleText);
             wait.until(dr -> {
