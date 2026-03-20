@@ -1,18 +1,17 @@
 package tests;
 
 import annotations.Seed;
-import io.qameta.allure.Attachment;
 import lombok.Getter;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
-import testnglisteners.SeedLoggingListener;
+import listeners.testng.SeedLoggingListener;
 import utils.datagenerator.DataGenerator;
 import utils.driver.DriverFactory;
+import utils.driver.DriverManager;
+
 import java.lang.reflect.Method;
 
 @Listeners({SeedLoggingListener.class})
@@ -25,16 +24,14 @@ public abstract class BaseTest {
 
     @BeforeMethod(groups = {"lifecycle"})
     public void setup(ITestResult test) {
-        driver = DriverFactory.createDriver();
+        DriverManager.setWebDriver(DriverFactory.createDriver());
+        driver = DriverManager.getWebDriver();
         setupGenerator(test);
     }
 
     @AfterMethod(groups = {"lifecycle"})
-    public void teardown(ITestResult testResult) {
-        if (!testResult.isSuccess()) {
-            attachScreenshot();
-        }
-        driver.quit();
+    public void teardown() {
+        DriverManager.quitDriver();
     }
 
 
@@ -47,11 +44,5 @@ public abstract class BaseTest {
         else {
             generator = new DataGenerator();
         }
-    }
-
-    // TODO Move screenshot attachment to TestLifecycleListener from Allure later
-    @Attachment(value = "screenshot", type = "image/png", fileExtension = ".png")
-    private byte[] attachScreenshot() {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 }
