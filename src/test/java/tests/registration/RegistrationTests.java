@@ -2,7 +2,6 @@ package tests.registration;
 
 import dto.User;
 import exceptions.PageNavigationException;
-import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageobjects.components.navigation.NavigationBar;
@@ -36,10 +35,8 @@ public class RegistrationTests extends BaseTest {
     private User user;
 
 
-    @BeforeMethod(groups = {"lifecycle"})
-    @Override
-    public void setup(ITestResult test) {
-        super.setup(test);
+    @BeforeMethod(alwaysRun = true)
+    public void setupRegistration() {
         driver.get(REGISTRATION_BASE_URL);
         registrationPage = new RegistrationPage(driver);
         navigation = new NavigationBar(driver);

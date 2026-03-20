@@ -99,7 +99,7 @@ public class CheckoutTests extends BaseTest {
     }
 
 
-    @BeforeClass(groups = {"lifecycle"})
+    @BeforeClass(alwaysRun = true)
     public static void prepareTetsData() {
         Properties userTestData = loadProperties(USER_TEST_DATA_FILE_PATH);
         Properties productsTestData = loadProperties(PRODUCTS_TEST_DATA_FILE_PATH);
@@ -121,10 +121,8 @@ public class CheckoutTests extends BaseTest {
         outOfStockProductName = productsTestData.getProperty("out-of-stock-product");
     }
 
-    @Override
-    @BeforeMethod(groups = {"lifecycle"})
-    public void setup(ITestResult testResult) {
-        super.setup(testResult);
+    @BeforeMethod(alwaysRun = true)
+    public void setupCheckout() {
         timeZone = ZoneId.of((String) ((JavascriptExecutor) driver).executeScript(
                 "return Intl.DateTimeFormat().resolvedOptions().timeZone;"));
         driver.get(ACCOUNT_BASE_URL);

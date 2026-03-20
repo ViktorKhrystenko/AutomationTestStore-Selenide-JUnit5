@@ -12,7 +12,7 @@ Default value is `src/test/resources/testng/xml/testng.xml`. It will run all tes
 
 ### -Dgroups="${groups}"
 
-Parameter specifies groups, that will be run, where `${groups}` is groups. You can specify more than one group, separating them by comma. For correct work always include `lifecycle` group.
+Parameter specifies groups, that will be run, where `${groups}` is groups. You can specify more than one group, separating them by comma.
 
 By default, all groups are included.
 

@@ -4,7 +4,6 @@
     <test name="smoke">
         <groups>
             <run>
-                <include name="lifecycle"/>
                 <include name="smoke"/>
             </run>
         </groups>
@@ -17,7 +16,6 @@
     <test name="critical-path">
         <groups>
             <run>
-                <include name="lifecycle"/>
                 <include name="critical-path"/>
             </run>
         </groups>
@@ -30,7 +28,6 @@
     <test name="regression">
         <groups>
             <run>
-                <include name="lifecycle"/>
                 <include name="regression"/>
             </run>
         </groups>

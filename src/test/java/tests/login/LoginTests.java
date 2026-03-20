@@ -30,9 +30,8 @@ public class LoginTests extends BaseTest {
     private User user;
 
 
-    @BeforeMethod(groups = {"lifecycle"})
-    public void setup(ITestResult testResult) {
-        super.setup(testResult);
+    @BeforeMethod(alwaysRun = true)
+    public void setupLogin() {
         driver.get(LOGIN_BASE_URL);
         loginPage = new LoginPage(driver);
 

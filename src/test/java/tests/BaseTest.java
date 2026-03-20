@@ -23,16 +23,17 @@ public abstract class BaseTest {
     protected DataGenerator generator;
 
 
-    @BeforeMethod(groups = {"lifecycle"})
+    @BeforeMethod(alwaysRun = true)
     public void setup(ITestResult test) {
         DriverManager.setWebDriver(DriverFactory.createDriver());
         driver = DriverManager.getWebDriver();
         setupGenerator(test);
     }
 
-    @AfterMethod(groups = {"lifecycle"})
+    @AfterMethod(alwaysRun = true)
     public void teardown() {
         DriverManager.quitDriver();
+        DataGeneratorManager.clear();
     }
 
 
