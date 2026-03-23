@@ -9,7 +9,7 @@
         </groups>
 
         <packages>
-            <package name="tests"></package>
+            <package name="tests.*"></package>
         </packages>
     </test>
 
@@ -21,7 +21,7 @@
         </groups>
 
         <packages>
-            <package name="tests"></package>
+            <package name="tests.*"></package>
         </packages>
     </test>
 
@@ -33,7 +33,7 @@
         </groups>
 
         <packages>
-            <package name="tests"></package>
+            <package name="tests.*"></package>
         </packages>
     </test>
 </suite>
