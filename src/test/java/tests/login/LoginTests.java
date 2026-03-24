@@ -2,7 +2,8 @@ package tests.login;
 
 import dto.User;
 import exceptions.PageNavigationException;
-import org.testng.ITestResult;
+import io.qameta.allure.Epic;
+import io.qameta.allure.testng.Tag;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageobjects.login.LoginPage;
@@ -22,6 +23,8 @@ import static org.testng.Assert.*;
 
 import static utils.StringFormatHelper.doesStringMatchRegex;
 
+@Epic("Login")
+@Tag("login")
 public class LoginTests extends BaseTest {
     private static final String TEST_DATA_FILE_PATH = LOGIN_TEST_DATA_PATH + "user.properties";
 
@@ -42,6 +45,7 @@ public class LoginTests extends BaseTest {
     }
 
 
+    @Tag("smoke")
     @Test(description = "2.1.1.1. Test case - Check successful login",
             groups = {
             "login",
@@ -60,6 +64,7 @@ public class LoginTests extends BaseTest {
     }
 
 
+    @Tag("critical-path")
     @Test(description = "2.2.1.1. Test case - Empty \"Login Name\" field",
             groups = {
             "login",
@@ -79,6 +84,7 @@ public class LoginTests extends BaseTest {
                 .isEqualTo("Error: Incorrect login or password provided.");
     }
 
+    @Tag("critical-path")
     @Test(description = "2.2.1.2. Test case - Incorrect login name",
             groups = {
             "login",
@@ -102,6 +108,7 @@ public class LoginTests extends BaseTest {
     }
 
 
+    @Tag("critical-path")
     @Test(description = "2.2.2.1. Test case - Empty \"Password\" field",
             groups = {
             "login",
@@ -121,6 +128,7 @@ public class LoginTests extends BaseTest {
                 .isEqualTo("Error: Incorrect login or password provided.");
     }
 
+    @Tag("critical-path")
     @Test(description = "2.2.2.2. Test case - Incorrect password",
             groups = {
             "login",
