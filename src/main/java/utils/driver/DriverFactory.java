@@ -36,7 +36,7 @@ public class DriverFactory {
             case "chrome": {
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments("--start-maximized")
-                        .addArguments("--disable-notification")
+                        .addArguments("--disable-notifications")
                         .addArguments("--incognito");
                 return new ChromeDriver(options);
             }
@@ -50,12 +50,12 @@ public class DriverFactory {
             case "edge": {
                 EdgeOptions options = new EdgeOptions();
                 options.addArguments("--start-maximized")
-                        .addArguments("--disable-notification")
+                        .addArguments("--disable-notifications")
                         .addArguments("--guest")
                         .addArguments("--inprivate");
                 Map<String, Object> preferences = new HashMap<>();
                 preferences.put("translate_enabled", false);
-                options.setExperimentalOption("pref", preferences);
+                options.setExperimentalOption("prefs", preferences);
                 return new EdgeDriver(options);
             }
             default:
@@ -70,7 +70,7 @@ public class DriverFactory {
                 options.addArguments("--window-size=1920,1080")
                         .addArguments("--headless=new")
                         .addArguments("--no-sandbox")
-                        .addArguments("--disable-notification")
+                        .addArguments("--disable-notifications")
                         .addArguments("--disable-gpu")
                         .addArguments("--disable-dev-shm-usage")
                         .addArguments("--remote-allow-origins=*");
@@ -89,13 +89,13 @@ public class DriverFactory {
                         .addArguments("--guest")
                         .addArguments("--headless=new")
                         .addArguments("--no-sandbox")
-                        .addArguments("--disable-notification")
+                        .addArguments("--disable-notifications")
                         .addArguments("--disable-gpu")
                         .addArguments("--disable-dev-shm-usage")
                         .addArguments("--remote-allow-origins=*");
                 Map<String, Object> preferences = new HashMap<>();
                 preferences.put("translate_enabled", false);
-                options.setExperimentalOption("pref", preferences);
+                options.setExperimentalOption("prefs", preferences);
                 return new EdgeDriver(options);
             }
             default:
