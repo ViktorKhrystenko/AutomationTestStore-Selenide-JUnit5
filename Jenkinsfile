@@ -19,17 +19,17 @@ pipeline {
                 stages {
                     stage('Smoke') {
                         steps {
-                            sh "mvn clean test -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
                         }
                     }
                     stage('Critical path') {
                         steps {
-                            sh "mvn clean test -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
                         }
                     }
                     stage('Regression') {
                         steps {
-                            sh "mvn clean test -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
                         }
                     }
                 }
