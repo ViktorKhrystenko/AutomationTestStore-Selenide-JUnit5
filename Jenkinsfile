@@ -10,7 +10,7 @@ pipeline {
                 axes {
                     axis {
                         name 'BROWSER'
-                        values BROWSER_LIST
+                        values 'chrome', 'firefox', 'edge'
                     }
                 }
                 agent {
@@ -18,21 +18,25 @@ pipeline {
                 }
                 stages {
                     stage('Smoke') {
-                        sh "mvn clean test -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                        steps {
+                            sh "mvn clean test -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                        }
                     }
                     stage('Critical path') {
-                        sh "mvn clean test -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
-
+                        steps {
+                            sh "mvn clean test -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                        }
                     }
                     stage('Regression') {
-                        sh "mvn clean test -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
-
+                        steps {
+                            sh "mvn clean test -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                        }
                     }
                 }
 
                 post {
                     always {
-                        stash name: "allure-results-${BROWSER}", include: 'target/allure-results/**', allowEmpty: true
+                        stash name: "allure-results-${BROWSER}", includes: 'target/allure-results/**', allowEmpty: true
                     }
                 }
             }
