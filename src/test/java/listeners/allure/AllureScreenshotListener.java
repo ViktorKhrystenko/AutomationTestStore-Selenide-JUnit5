@@ -13,7 +13,7 @@ public class AllureScreenshotListener implements TestLifecycleListener {
 
     @Override
     public void beforeTestStop(TestResult result) {
-        if (result.getStatus() == Status.BROKEN || result.getStatus() == Status.FAILED) {
+        if (result.getStatus() == Status.BROKEN || result.getStatus() == Status.FAILED || result.getStatus() == Status.SKIPPED) {
             WebDriver driver = DriverManager.getWebDriver();
             if (driver != null) {
                 attachScreenshot(driver);
