@@ -9,7 +9,7 @@ pipeline {
             matrix {
                 axes {
                     axis {
-                        name BROWSER
+                        name 'BROWSER'
                         values BROWSER_LIST
                     }
                 }
@@ -25,7 +25,7 @@ pipeline {
 
                     }
                     stage('Regression') {
-                        sh "mvn clean test -Dgroups=\"reggression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                        sh "mvn clean test -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
 
                     }
                 }
@@ -38,9 +38,9 @@ pipeline {
             }
         }
 
-        stage {
+        stage('Allure reporting') {
             agent any
-            step {
+            steps {
                 script {
                     for (String browserName: BROWSER_LIST) {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
