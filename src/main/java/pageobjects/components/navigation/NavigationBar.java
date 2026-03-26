@@ -1,6 +1,5 @@
 package pageobjects.components.navigation;
 
-import config.ConfigReader;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;

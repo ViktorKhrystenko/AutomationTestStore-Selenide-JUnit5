@@ -121,7 +121,8 @@ public abstract class BasePage {
         new Actions(driver)
                 .moveToElement(elementToClickOn)
                 .perform();
-        elementToClickOn.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", elementToClickOn);
+        // elementToClickOn.click();
         wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
         waitUntilPageIsLoaded();
     }
