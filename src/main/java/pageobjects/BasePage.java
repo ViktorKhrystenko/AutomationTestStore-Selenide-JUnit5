@@ -4,6 +4,7 @@ import exceptions.PageNavigationException;
 import exceptions.UnableToSelectOptionException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
@@ -111,6 +112,16 @@ public abstract class BasePage {
     protected void performActionAndWaitPageLoad(Runnable action) {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
         action.run();
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
+    protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        new Actions(driver)
+                .moveToElement(elementToClickOn)
+                .perform();
+        elementToClickOn.click();
         wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
         waitUntilPageIsLoaded();
     }

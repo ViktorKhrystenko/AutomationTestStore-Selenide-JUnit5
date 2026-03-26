@@ -51,7 +51,8 @@ public class NavigationBar extends BasePage {
 
     @Step("Click on 'Account page' link")
     public AccountPage clickOnAccountPageLink() throws PageNavigationException {
-        performActionAndWaitPageLoad(() ->accountPageLink.click());
+        clickOnElementAndWaitPageLoad(accountPageLink);
+        // performActionAndWaitPageLoad(() -> accountPageLink.click());
         return new AccountPage(driver);
     }
 
@@ -64,7 +65,8 @@ public class NavigationBar extends BasePage {
 
     @Step("Click on 'Cart page' link")
     public CartPage clickOnCartPageLink() throws PageNavigationException {
-        performActionAndWaitPageLoad(() -> cartPageLink.click());
+        clickOnElementAndWaitPageLoad(cartPageLink);
+        // performActionAndWaitPageLoad(() -> cartPageLink.click());
 //        cartPageLink.click();
 //        waitUntilPageIsLoaded();
         return new CartPage(driver);
