@@ -1,5 +1,6 @@
 package pageobjects.components.navigation;
 
+import config.ConfigReader;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
@@ -51,6 +52,9 @@ public class NavigationBar extends BasePage {
     @Step("Click on 'Account page' link")
     public AccountPage clickOnAccountPageLink() throws PageNavigationException {
         accountPageLink.click();
+        if (ConfigReader.readConfigProperty("run.target", "local").equals("jenkins-docker-agent")) {
+            waitUntilPageStartsRefreshing();
+        }
         waitUntilPageIsLoaded();
         return new AccountPage(driver);
     }
