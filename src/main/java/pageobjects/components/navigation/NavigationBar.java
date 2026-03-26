@@ -51,11 +51,7 @@ public class NavigationBar extends BasePage {
 
     @Step("Click on 'Account page' link")
     public AccountPage clickOnAccountPageLink() throws PageNavigationException {
-        accountPageLink.click();
-        if (ConfigReader.readConfigProperty("run.target", "local").equals("jenkins-docker-agent")) {
-            waitUntilPageStartsRefreshing();
-        }
-        waitUntilPageIsLoaded();
+        performActionAndWaitPageLoad(() ->accountPageLink.click());
         return new AccountPage(driver);
     }
 
@@ -68,8 +64,9 @@ public class NavigationBar extends BasePage {
 
     @Step("Click on 'Cart page' link")
     public CartPage clickOnCartPageLink() throws PageNavigationException {
-        cartPageLink.click();
-        waitUntilPageIsLoaded();
+        performActionAndWaitPageLoad(() -> cartPageLink.click());
+//        cartPageLink.click();
+//        waitUntilPageIsLoaded();
         return new CartPage(driver);
     }
 

@@ -108,6 +108,13 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.stalenessOf(driver.findElement(ROOT_HTML_ELEMENT)));
     }
 
+    protected void performActionAndWaitPageLoad(Runnable action) {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        action.run();
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
 
     protected void checkLocation(String regex, String pageName) throws PageNavigationException {
         String currentUrl = driver.getCurrentUrl();
