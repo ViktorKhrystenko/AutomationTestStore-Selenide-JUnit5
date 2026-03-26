@@ -6,33 +6,34 @@ pipeline {
     stages {
 
         stage('Test') {
-        matrix {
-            axes {
-                axis {
-                    name BROWSER
-                    values BROWSER_LIST
+            matrix {
+                axes {
+                    axis {
+                        name BROWSER
+                        values BROWSER_LIST
+                    }
                 }
-            }
-            agent {
-                label "docker-${BROWSER}"
-            }
-            stages {
-                stage('Smoke') {
-                    sh "mvn clean test -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                agent {
+                    label "docker-${BROWSER}"
                 }
-                stage('Critical path') {
-                    sh "mvn clean test -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                stages {
+                    stage('Smoke') {
+                        sh "mvn clean test -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                    }
+                    stage('Critical path') {
+                        sh "mvn clean test -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
 
-                }
-                stage('Regression') {
-                    sh "mvn clean test -Dgroups=\"reggression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                    }
+                    stage('Regression') {
+                        sh "mvn clean test -Dgroups=\"reggression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
 
+                    }
                 }
-            }
 
-            post {
-                always {
-                    stash name: "allure-results-${BROWSER}", include: 'target/allure-results/**', allowEmpty: true
+                post {
+                    always {
+                        stash name: "allure-results-${BROWSER}", include: 'target/allure-results/**', allowEmpty: true
+                    }
                 }
             }
         }
