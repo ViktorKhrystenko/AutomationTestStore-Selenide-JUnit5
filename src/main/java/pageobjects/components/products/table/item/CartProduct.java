@@ -92,9 +92,10 @@ public class CartProduct extends Product {
             if (quantityOnField != quantity) {
                 quantityField.clear();
                 quantityField.sendKeys(String.valueOf(quantity));
-                quantityField.sendKeys(Keys.ENTER);
-                waitUntilPageStartsRefreshing();
-                waitUntilPageIsLoaded();
+                performActionAndWaitPageLoad(() -> quantityField.sendKeys(Keys.ENTER));
+//                quantityField.sendKeys(Keys.ENTER);
+//                waitUntilPageStartsRefreshing();
+//                waitUntilPageIsLoaded();
                 if (cartPage.getProductTable().getProductNames().length == 0) {
                     return;
                 }

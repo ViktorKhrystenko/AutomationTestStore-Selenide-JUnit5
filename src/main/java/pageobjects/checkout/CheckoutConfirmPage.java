@@ -76,9 +76,7 @@ public class CheckoutConfirmPage extends BasePage implements PageWithProductTabl
 
     @Step("Click on \"Confirm order\" button")
     public SuccessfulCheckoutPage clickOnConfirmOrderButton() throws PageNavigationException {
-        confirmOrderButton.click();
-        waitUntilPageStartsRefreshing();
-        waitUntilPageIsLoaded();
+        performActionAndWaitPageLoad(() -> confirmOrderButton.click());
         return new SuccessfulCheckoutPage(driver);
     }
 }
