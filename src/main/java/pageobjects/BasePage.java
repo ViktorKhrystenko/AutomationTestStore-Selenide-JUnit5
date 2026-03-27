@@ -154,9 +154,9 @@ public abstract class BasePage {
         if (isChromeInDocker()) {
             try {
                 wait.until(ExpectedConditions.visibilityOf(field));
-                field.sendKeys("");
+                field.sendKeys("\n");
                 // new Actions(driver).sendKeys(Keys.ENTER).perform();
-                JsActionsUtil.sendEnterToField(field);
+                // JsActionsUtil.sendEnterToField(field);
             }
             catch (JsonException e) {
                 throw new org.openqa.selenium.NoSuchElementException("");
