@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.JsActionsUtil;
 import utils.datagenerator.DataGeneratorManager;
 
 import java.time.Duration;
@@ -119,18 +120,38 @@ public abstract class BasePage {
 
     protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
-        if (readConfigProperty("run.target", "local").equals("jenkins-docker-agent")
-                && readConfigProperty("browser", "chrome").equals("chrome")) {
+        if (isChromeInDocker()) {
             new Actions(driver)
                     .moveToElement(elementToClickOn)
                     .perform();
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", elementToClickOn);
+            JsActionsUtil.clickOnElement(elementToClickOn);
         }
         else {
             elementToClickOn.click();
         }
         wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
         waitUntilPageIsLoaded();
+    }
+
+    protected void sendEnterAndWaitPageLoad(WebElement field) {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        if (isChromeInDocker()) {
+            JsActionsUtil.sendEnterToField(field);
+        }
+        else {
+            field.sendKeys(Keys.ENTER);
+        }
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
+    protected void hoverCursorOverElement(WebElement element) {
+        if (isChromeInDocker()) {
+            JsActionsUtil.hoverCursorOverElement(element);
+        }
+        else {
+            new Actions(driver).moveToElement(element).perform();
+        }
     }
 
 
@@ -150,5 +171,11 @@ public abstract class BasePage {
                 return false;
             }
         });
+    }
+
+
+    private boolean isChromeInDocker() {
+        return readConfigProperty("run.target", "local").equals("jenkins-docker-agent")
+                && readConfigProperty("browser", "chrome").equals("chrome");
     }
 }

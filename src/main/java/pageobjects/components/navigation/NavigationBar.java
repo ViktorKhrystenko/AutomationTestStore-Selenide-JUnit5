@@ -72,7 +72,7 @@ public class NavigationBar extends BasePage {
     }
 
     public AccountDropdown hoverCursorOverAccountLink() {
-        new Actions(driver).moveToElement(accountPageLink).perform();
+        hoverCursorOverElement(accountPageLink);
         wait.until(ExpectedConditions.visibilityOf(accountDropdownElement));
         return new AccountDropdown(driver);
     }
