@@ -155,8 +155,8 @@ public abstract class BasePage {
             try {
                 wait.until(ExpectedConditions.visibilityOf(field));
                 field.sendKeys("");
-                new Actions(driver).sendKeys(Keys.ENTER).perform();
-                // JsActionsUtil.confirmForm(field);
+                // new Actions(driver).sendKeys(Keys.ENTER).perform();
+                JsActionsUtil.sendEnterToField(field);
             }
             catch (JsonException e) {
                 throw new org.openqa.selenium.NoSuchElementException("");
