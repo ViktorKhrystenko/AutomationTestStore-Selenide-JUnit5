@@ -1,8 +1,13 @@
 package utils;
 
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import utils.driver.DriverManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsActionsUtil {
 
@@ -41,6 +46,22 @@ public class JsActionsUtil {
                             });
                             arguments[0].dispatchEvent(event);
                         });""", field);
+    }
+
+    public static void sendEnterToFieldViaCromeDevTools(WebElement field) {
+        WebDriver driver = DriverManager.getWebDriver();
+        ChromeDriver chromeDriver = (ChromeDriver) driver;
+        Map<String, Object> cmdParams = new HashMap<>();
+        cmdParams.put("type", "keyDown");
+        cmdParams.put("key", "Enter");
+        cmdParams.put("code", "Enter");
+        cmdParams.put("windowsVirtualKeyCode", 13);
+        cmdParams.put("text", "\r");
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].focus();", field);
+        chromeDriver.executeCdpCommand("Input.dispatchKeyEvent", cmdParams);
+        cmdParams.put("type", "keyUp");
+        chromeDriver.executeCdpCommand("Input.dispatchKeyEvent", cmdParams);
     }
 
     public static void confirmForm(WebElement field) {
