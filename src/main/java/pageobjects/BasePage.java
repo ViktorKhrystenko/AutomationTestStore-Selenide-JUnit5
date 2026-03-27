@@ -133,15 +133,11 @@ public abstract class BasePage {
     protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) throws NoSuchElementException {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
         if (isChromeInDocker()) {
+            elementToClickOn.getText();
             new Actions(driver)
                     .moveToElement(elementToClickOn)
                     .perform();
-            try {
-                JsActionsUtil.clickOnElement(elementToClickOn);
-            }
-            catch (Exception e) {
-                throw new NoSuchElementException("");
-            }
+            JsActionsUtil.clickOnElement(elementToClickOn);
         }
         else {
             elementToClickOn.click();
