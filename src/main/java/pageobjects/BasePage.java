@@ -156,9 +156,9 @@ public abstract class BasePage {
                 new Actions(driver)
                         .moveToElement(field)
                         .click()
-                        .sendKeys(Keys.ENTER)
+                        // .sendKeys(Keys.ENTER)
                         .perform();
-                // JsActionsUtil.confirmForm(field);
+                JsActionsUtil.confirmForm(field);
             }
             catch (JsonException e) {
                 throw new org.openqa.selenium.NoSuchElementException("");
