@@ -34,6 +34,9 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     private static final By COUNTRY_DROPDOWN_LOCATOR = By.id("estimate_country");
     private static final By STATE_DROPDOWN_LOCATOR = By.id("estimate_country_zones");
 
+    @FindBy(id = "cart_update")
+    private WebElement updateCartButton;
+
     @FindBy(id = "cart_checkout1")
     private WebElement checkoutButton;
 
@@ -104,6 +107,11 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
     public CheckoutConfirmPage clickOnCheckoutButton() throws PageNavigationException, NoSuchElementException {
         clickOnElementAndWaitPageLoad(checkoutButton);
         return new CheckoutConfirmPage(driver);
+    }
+
+    public CartPage clickOnUpdateCartButton() {
+        clickOnElementAndWaitPageLoad(updateCartButton);
+        return this;
     }
 
 

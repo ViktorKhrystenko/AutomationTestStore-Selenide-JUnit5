@@ -91,7 +91,7 @@ public class CartProduct extends Product {
             if (quantityOnField != quantity) {
                 quantityField.clear();
                 enterText(quantityField, String.valueOf(quantity));
-                sendEnterAndWaitPageLoad(quantityField);
+                cartPage.clickOnUpdateCartButton();
                 if (cartPage.getProductTable().getProductNames().length == 0) {
                     return;
                 }
