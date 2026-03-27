@@ -148,8 +148,7 @@ public class RegistrationPage extends BasePage {
 
     @Step("Click on 'Continue' button")
     public SuccessfulRegistrationPage clickOnContinueButton() throws PageNavigationException {
-        continueButton.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(continueButton);
         return new SuccessfulRegistrationPage(driver);
     }
 

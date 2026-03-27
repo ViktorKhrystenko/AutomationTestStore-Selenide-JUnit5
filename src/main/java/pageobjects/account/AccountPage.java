@@ -34,15 +34,13 @@ public class AccountPage extends BasePage {
 
     @Step("Click on \"Order history\" icon")
     public OrderHistoryPage clickOnOrderHistoryIcon() throws PageNavigationException {
-        orderHistoryIcon.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(orderHistoryIcon);
         return new OrderHistoryPage(driver);
     }
 
     @Step("Click on 'Logoff' link")
     public LogoutPage clickOnLogoffLink() throws PageNavigationException {
-        logoffLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(logoffLink);
         return new LogoutPage(driver);
     }
 }

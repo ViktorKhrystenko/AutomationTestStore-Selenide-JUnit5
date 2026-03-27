@@ -29,8 +29,7 @@ public class SuccessfulRegistrationPage extends BasePage {
 
     @Step("Click on 'Logoff' link")
     public LogoutPage clickOnLogoffLink() throws PageNavigationException {
-        logoffLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(logoffLink);
         return new LogoutPage(driver);
     }
 }

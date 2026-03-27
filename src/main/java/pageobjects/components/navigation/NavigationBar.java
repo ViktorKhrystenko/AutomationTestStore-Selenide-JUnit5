@@ -43,38 +43,31 @@ public class NavigationBar extends BasePage {
 
     @Step("Click on 'Login or register' link")
     public LoginPage clickOnLoginOrRegisterLink() throws PageNavigationException {
-        loginOrRegisterLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(loginOrRegisterLink);
         return new LoginPage(driver);
     }
 
     @Step("Click on 'Account page' link")
     public AccountPage clickOnAccountPageLink() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(accountPageLink);
-        // performActionAndWaitPageLoad(() -> accountPageLink.click());
         return new AccountPage(driver);
     }
 
     @Step("Click on 'Home page' link")
     public HomePage clickOnHomePageLink() throws PageNavigationException {
-        homePageLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(homePageLink);
         return new HomePage(driver);
     }
 
     @Step("Click on 'Cart page' link")
     public CartPage clickOnCartPageLink() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(cartPageLink);
-        // performActionAndWaitPageLoad(() -> cartPageLink.click());
-//        cartPageLink.click();
-//        waitUntilPageIsLoaded();
         return new CartPage(driver);
     }
 
     @Step("Click on 'Apparel & Accessories' category link")
     public ApparelAndAccessoriesCategoryPage clickOnApparelAndAccessoriesCategoryPageLink() throws PageNavigationException {
-        apparelAndAccessoriesCategoryLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(apparelAndAccessoriesCategoryLink);
         return new ApparelAndAccessoriesCategoryPage(driver);
     }
 

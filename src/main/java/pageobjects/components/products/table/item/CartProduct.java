@@ -65,8 +65,7 @@ public class CartProduct extends Product {
     public CartPage removeProductFromCart() {
         return Allure.step("Remove \"" + productName + "\" product from cart",
                 () -> {
-                    removeProductButton.click();
-                    waitUntilPageIsLoaded();
+                    clickOnElementAndWaitPageLoad(removeProductButton);
                     cartPage.getProductTable().getProductNames();
                     return cartPage;
                 });

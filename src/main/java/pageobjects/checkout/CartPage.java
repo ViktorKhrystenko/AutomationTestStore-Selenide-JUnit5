@@ -102,8 +102,7 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
 
     @Step("Click on \"Checkout\" button")
     public CheckoutConfirmPage clickOnCheckoutButton() throws PageNavigationException, NoSuchElementException {
-        checkoutButton.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(checkoutButton);
         return new CheckoutConfirmPage(driver);
     }
 

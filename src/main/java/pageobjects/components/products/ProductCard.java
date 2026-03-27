@@ -41,8 +41,7 @@ public class ProductCard extends BasePage {
                             productTitleHref,
                             PRODUCT_LINK_HREF_PATTERN,
                             ""));
-                    productTitleElement.click();
-                    waitUntilPageIsLoaded();
+                    clickOnElementAndWaitPageLoad(productTitleElement);
                     Optional<Integer> path = getPathFromHref(productTitleHref);
                     if (path.isEmpty()) {
                         return new ProductPage(driver, productId, productName);

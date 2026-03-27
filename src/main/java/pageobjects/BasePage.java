@@ -9,7 +9,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import utils.datagenerator.DataGenerator;
 import utils.datagenerator.DataGeneratorManager;
 
 import java.time.Duration;
@@ -18,6 +17,8 @@ import java.util.NoSuchElementException;
 
 import static constants.FormValues.DESELECTED_OPTION;
 import static utils.StringFormatHelper.doesStringMatchRegex;
+
+import static config.ConfigReader.readConfigProperty;
 
 public abstract class BasePage {
     private static final By ROOT_HTML_ELEMENT = By.tagName("html");
@@ -118,11 +119,16 @@ public abstract class BasePage {
 
     protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
-        new Actions(driver)
-                .moveToElement(elementToClickOn)
-                .perform();
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", elementToClickOn);
-        // elementToClickOn.click();
+        if (readConfigProperty("run.target", "local").equals("jenkins-docker-agent")
+                && readConfigProperty("browser", "chrome").equals("chrome")) {
+            new Actions(driver)
+                    .moveToElement(elementToClickOn)
+                    .perform();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", elementToClickOn);
+        }
+        else {
+            elementToClickOn.click();
+        }
         wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
         waitUntilPageIsLoaded();
     }
