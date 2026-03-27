@@ -56,7 +56,7 @@ public class ProductPage extends BasePage {
     @Step("Set product quantity to {0}")
     public ProductPage setQuantity(long quantity) {
         quantityField.clear();
-        quantityField.sendKeys(String.valueOf(quantity));
+        enterText(quantityField, String.valueOf(quantity));
         return this;
     }
 

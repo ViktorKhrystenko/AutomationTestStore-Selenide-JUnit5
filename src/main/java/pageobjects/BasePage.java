@@ -5,6 +5,8 @@ import exceptions.UnableToSelectOptionException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
@@ -14,7 +16,6 @@ import utils.datagenerator.DataGeneratorManager;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static constants.FormValues.DESELECTED_OPTION;
 import static utils.StringFormatHelper.doesStringMatchRegex;
@@ -37,7 +38,17 @@ public abstract class BasePage {
 
 
     protected void enterText(By locator, String text) {
-        driver.findElement(locator).sendKeys(text);
+        enterText(driver.findElement(locator), text);
+    }
+
+    protected void enterText(WebElement field, String text) {
+        if (isChromeInDocker()) {
+            JsActionsUtil.enterText(field, text);
+        }
+        else  {
+            field.sendKeys(text);
+        }
+        wait.until(d -> field.getDomProperty("value").equals(text));
     }
 
     protected String getTextFromElementLocated(By locator) {
@@ -118,13 +129,18 @@ public abstract class BasePage {
         waitUntilPageIsLoaded();
     }
 
-    protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) {
+    protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) throws NoSuchElementException {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
         if (isChromeInDocker()) {
             new Actions(driver)
                     .moveToElement(elementToClickOn)
                     .perform();
-            JsActionsUtil.clickOnElement(elementToClickOn);
+            try {
+                JsActionsUtil.clickOnElement(elementToClickOn);
+            }
+            catch (JsonException e) {
+                throw new NoSuchElementException("");
+            }
         }
         else {
             elementToClickOn.click();
@@ -133,10 +149,15 @@ public abstract class BasePage {
         waitUntilPageIsLoaded();
     }
 
-    protected void sendEnterAndWaitPageLoad(WebElement field) {
+    protected void sendEnterAndWaitPageLoad(WebElement field) throws NoSuchElementException {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
         if (isChromeInDocker()) {
-            JsActionsUtil.sendEnterToField(field);
+            try {
+                JsActionsUtil.sendEnterToField(field);
+            }
+            catch (JsonException e) {
+                throw new org.openqa.selenium.NoSuchElementException("");
+            }
         }
         else {
             field.sendKeys(Keys.ENTER);

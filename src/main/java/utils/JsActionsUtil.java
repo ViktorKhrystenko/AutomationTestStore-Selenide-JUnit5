@@ -5,6 +5,12 @@ import org.openqa.selenium.WebElement;
 import utils.driver.DriverManager;
 
 public class JsActionsUtil {
+
+    public static void enterText(WebElement field, String text) {
+        ((JavascriptExecutor) DriverManager.getWebDriver())
+                .executeScript("arguments[0].value = arguments[1];", field, text);
+    }
+
     public static void clickOnElement(WebElement elementToClickOn) {
         ((JavascriptExecutor) DriverManager.getWebDriver())
                 .executeScript("arguments[0].click();", elementToClickOn);
