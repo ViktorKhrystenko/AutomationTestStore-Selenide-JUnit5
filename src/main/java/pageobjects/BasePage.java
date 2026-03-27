@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.JsActionsUtil;
 import utils.datagenerator.DataGeneratorManager;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
 
@@ -138,7 +139,7 @@ public abstract class BasePage {
             try {
                 JsActionsUtil.clickOnElement(elementToClickOn);
             }
-            catch (JsonException e) {
+            catch (Exception e) {
                 throw new NoSuchElementException("");
             }
         }
