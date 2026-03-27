@@ -153,6 +153,7 @@ public abstract class BasePage {
         WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
         if (isChromeInDocker()) {
             try {
+                new Actions(driver).click().perform();
                 JsActionsUtil.confirmForm(field);
             }
             catch (JsonException e) {
