@@ -42,4 +42,14 @@ public class JsActionsUtil {
                             arguments[0].dispatchEvent(event);
                         });""", field);
     }
+
+    public static void confirmForm(WebElement field) {
+        ((JavascriptExecutor) DriverManager.getWebDriver()).executeScript(
+                """
+                arguments[0].closest('form').dispatchEvent(new Event('submit', {
+                    bubbles: true,
+                    cancelable: true
+                }));""", field
+        );
+    }
 }
