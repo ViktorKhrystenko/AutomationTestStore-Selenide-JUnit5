@@ -19,17 +19,17 @@ pipeline {
                 stages {
                     stage('Smoke') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
                         }
                     }
                     stage('Critical path') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
                         }
                     }
                     stage('Regression') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
                         }
                     }
                 }
@@ -41,19 +41,19 @@ pipeline {
                 }
             }
         }
+    }
 
-        post {
-            always {
-                node {
-                    script {
-                        for (String browserName: BROWSER_LIST) {
-                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                unstash "allure-results-${browserName}"
-                            }
+    post {
+        always {
+            node {
+                script {
+                    for (String browserName: BROWSER_LIST) {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            unstash "allure-results-${browserName}"
                         }
                     }
-                    allure jdk: '', results: [[path: 'target/allure-results']]
                 }
+                allure jdk: '', results: [[path: 'target/allure-results']]
             }
         }
     }
