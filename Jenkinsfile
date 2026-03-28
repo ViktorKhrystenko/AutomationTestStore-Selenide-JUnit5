@@ -42,20 +42,16 @@ pipeline {
             }
         }
 
-        stage('Allure reporting') {
-            agent any
-            steps {
-                script {
-                    for (String browserName: BROWSER_LIST) {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            unstash "allure-results-${browserName}"
+        post {
+            always {
+                node {
+                    script {
+                        for (String browserName: BROWSER_LIST) {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                unstash "allure-results-${browserName}"
+                            }
                         }
                     }
-                }
-            }
-
-            post {
-                always {
                     allure jdk: '', results: [[path: 'target/allure-results']]
                 }
             }
