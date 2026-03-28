@@ -45,16 +45,15 @@ pipeline {
 
     post {
         always {
-            node {
-                script {
-                    for (String browserName: BROWSER_LIST) {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            unstash "allure-results-${browserName}"
-                        }
+            agent any
+            script {
+                for (String browserName: BROWSER_LIST) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        unstash "allure-results-${browserName}"
                     }
                 }
-                allure jdk: '', results: [[path: 'target/allure-results']]
             }
+            allure jdk: '', results: [[path: 'target/allure-results']]
         }
     }
 }
