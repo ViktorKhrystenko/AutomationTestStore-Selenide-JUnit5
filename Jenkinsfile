@@ -24,12 +24,12 @@ pipeline {
                     }
                     stage('Critical path') {
                         steps {
-                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh script: "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true", returnStatus: true
                         }
                     }
                     stage('Regression') {
                         steps {
-                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh script: "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true", returnStatus: true
                         }
                     }
                 }
