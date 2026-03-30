@@ -1,0 +1,2 @@
+listeners.allure.AllureScreenshotListener
+listeners.allure.BrowserTaggingListener

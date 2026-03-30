@@ -62,8 +62,8 @@ public class OrderHistoryPage extends BasePage {
     @Step("Click on \"View\" button of {0} order")
     public OrderPage getToOrderDetails(int orderIndex) throws PageNavigationException {
         int orderId = getOrderId(orderIndex);
-        getViewDetailsButton(orderIndex).click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(
+                getViewDetailsButton(orderIndex));
         return new OrderPage(driver, orderId);
     }
 
@@ -87,8 +87,8 @@ public class OrderHistoryPage extends BasePage {
     @Step("Click on \"View\" button of the most resent order")
     public OrderPage getToOrderDetailsOfMostResentOrder() throws PageNavigationException {
         int orderId = getOrderIdOfMostResentOrder();
-        getViewDetailsButton(0).click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(
+                getViewDetailsButton(0));
         return new OrderPage(driver, orderId);
     }
 

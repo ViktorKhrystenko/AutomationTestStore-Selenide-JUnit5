@@ -4,18 +4,24 @@ import exceptions.PageNavigationException;
 import exceptions.UnableToSelectOptionException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import utils.datagenerator.DataGenerator;
+import utils.JsActionsUtil;
+import utils.datagenerator.DataGeneratorManager;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static constants.FormValues.DESELECTED_OPTION;
 import static utils.StringFormatHelper.doesStringMatchRegex;
+
+import static config.ConfigReader.readConfigProperty;
 
 public abstract class BasePage {
     private static final By ROOT_HTML_ELEMENT = By.tagName("html");
@@ -33,14 +39,24 @@ public abstract class BasePage {
 
 
     protected void enterText(By locator, String text) {
-        driver.findElement(locator).sendKeys(text);
+        enterText(driver.findElement(locator), text);
+    }
+
+    protected void enterText(WebElement field, String text) {
+        if (isChromeInDocker()) {
+            JsActionsUtil.enterText(field, text);
+        }
+        else  {
+            field.sendKeys(text);
+        }
+        wait.until(d -> field.getDomProperty("value").equals(text));
     }
 
     protected String getTextFromElementLocated(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
 
-    protected void selectRandomOption(By selectLocator, DataGenerator generator) throws UnableToSelectOptionException {
+    protected void selectRandomOption(By selectLocator) throws UnableToSelectOptionException {
         FluentWait<WebDriver> fWait = new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofMillis(500))
@@ -57,7 +73,7 @@ public abstract class BasePage {
                             & !option.getText().equals(selectedOption))
                     .toList();
             randomOptions.get(0).isEnabled();
-            WebElement randomOption = generator.selectRandomOption(randomOptions);
+            WebElement randomOption = DataGeneratorManager.getDataGenerator().selectRandomOption(randomOptions);
             String optionVisibleText = randomOption.getText();
             selectOptionByVisibleText(selectLocator, optionVisibleText);
             wait.until(dr -> {
@@ -107,6 +123,56 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.stalenessOf(driver.findElement(ROOT_HTML_ELEMENT)));
     }
 
+    protected void performActionAndWaitPageLoad(Runnable action) {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        action.run();
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
+    protected void clickOnElementAndWaitPageLoad(WebElement elementToClickOn) throws NoSuchElementException {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        if (isChromeInDocker()) {
+            elementToClickOn.getText();
+            new Actions(driver)
+                    .moveToElement(elementToClickOn)
+                    .perform();
+            JsActionsUtil.clickOnElement(elementToClickOn);
+        }
+        else {
+            elementToClickOn.click();
+        }
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
+    protected void sendEnterAndWaitPageLoad(WebElement field) throws NoSuchElementException {
+        WebElement oldPageHtml = driver.findElement(ROOT_HTML_ELEMENT);
+        if (isChromeInDocker()) {
+            try {
+                wait.until(ExpectedConditions.visibilityOf(field));
+                JsActionsUtil.sendEnterToField(field);
+            }
+            catch (JsonException e) {
+                throw new org.openqa.selenium.NoSuchElementException("");
+            }
+        }
+        else {
+            field.sendKeys(Keys.ENTER);
+        }
+        wait.until(ExpectedConditions.stalenessOf(oldPageHtml));
+        waitUntilPageIsLoaded();
+    }
+
+    protected void hoverCursorOverElement(WebElement element) {
+        if (isChromeInDocker()) {
+            JsActionsUtil.hoverCursorOverElement(element);
+        }
+        else {
+            new Actions(driver).moveToElement(element).perform();
+        }
+    }
+
 
     protected void checkLocation(String regex, String pageName) throws PageNavigationException {
         String currentUrl = driver.getCurrentUrl();
@@ -124,5 +190,11 @@ public abstract class BasePage {
                 return false;
             }
         });
+    }
+
+
+    private boolean isChromeInDocker() {
+        return readConfigProperty("run.target", "local").equals("jenkins-docker-agent")
+                && readConfigProperty("browser", "chrome").equals("chrome");
     }
 }

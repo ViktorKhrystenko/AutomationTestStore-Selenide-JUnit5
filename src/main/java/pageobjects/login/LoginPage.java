@@ -57,15 +57,13 @@ public class LoginPage extends BasePage {
 
     @Step("Click on 'Login' button")
     public AccountPage clickOnLoginButton() throws PageNavigationException {
-        loginButton.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(loginButton);
         return new AccountPage(driver);
     }
 
     @Step("Click on 'To registration page' button")
     public RegistrationPage clickOnToRegistrationPageButton() throws PageNavigationException {
-        toRegistrationPageButton.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(toRegistrationPageButton);
         return new RegistrationPage(driver);
     }
 
