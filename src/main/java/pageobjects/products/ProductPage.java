@@ -56,21 +56,19 @@ public class ProductPage extends BasePage {
     @Step("Set product quantity to {0}")
     public ProductPage setQuantity(long quantity) {
         quantityField.clear();
-        quantityField.sendKeys(String.valueOf(quantity));
+        enterText(quantityField, String.valueOf(quantity));
         return this;
     }
 
     @Step("Click on \"Add to cart\" button")
     public CartPage clickOnAddToCartButton() throws PageNavigationException, NoSuchElementException {
-        addToCartButton.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(addToCartButton);
         return new CartPage(driver);
     }
 
     @Step("Click on \"Out of stock\" button")
     public void clickOnOutOfStockButton() throws NoSuchElementException {
         outOfStockButton.click();
-        waitUntilPageIsLoaded();
         if (!driver.getCurrentUrl().equals(BASE_URL)) {
             throw new IllegalStateException(String.format("Click on \"Out of stock\" button caused url change. Url had to stay: %s . " +
                     "Current url: %s",

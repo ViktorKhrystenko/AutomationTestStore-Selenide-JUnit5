@@ -22,8 +22,7 @@ public class AccountDropdown extends BasePage {
 
     @Step("Click on \"Order history\" link")
     public OrderHistoryPage clickOnOrderHistoryLink() throws PageNavigationException {
-        orderHistoryLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(orderHistoryLink);
         return new OrderHistoryPage(driver);
     }
 }

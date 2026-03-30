@@ -40,8 +40,7 @@ public class SuccessfulCheckoutPage extends BasePage {
     @Step("Click on \"To invoice page\" link")
     public OrderPage clickOnToInvoicePageLink() throws PageNavigationException {
         int orderId = Integer.parseInt(getOrderId());
-        toInvoicePageLink.click();
-        waitUntilPageIsLoaded();
+        clickOnElementAndWaitPageLoad(toInvoicePageLink);
         return new OrderPage(driver, orderId);
     }
 }

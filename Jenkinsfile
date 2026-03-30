@@ -19,17 +19,17 @@ pipeline {
                 stages {
                     stage('Smoke') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
+                            sh "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"smoke\" -Dbrowser=\"${BROWSER}\""
                         }
                     }
                     stage('Critical path') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh script: "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"critical-path\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true", returnStatus: true
                         }
                     }
                     stage('Regression') {
                         steps {
-                            sh "mvn clean test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true"
+                            sh script: "mvn test -Drun.target=\"jenkins-docker-agent\" -Dgroups=\"regression\" -Dbrowser=\"${BROWSER}\" -Dmaven.test.failure.ignore=true", returnStatus: true
                         }
                     }
                 }
@@ -41,10 +41,11 @@ pipeline {
                 }
             }
         }
+    }
 
-        stage('Allure reporting') {
-            agent any
-            steps {
+    post {
+        always {
+            node('built-in') {
                 script {
                     for (String browserName: BROWSER_LIST) {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -52,12 +53,7 @@ pipeline {
                         }
                     }
                 }
-            }
-
-            post {
-                always {
-                    allure jdk: '', results: [[path: 'target/allure-results']]
-                }
+                allure jdk: '', results: [[path: 'target/allure-results']]
             }
         }
     }

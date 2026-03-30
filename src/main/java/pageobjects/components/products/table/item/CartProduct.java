@@ -65,8 +65,7 @@ public class CartProduct extends Product {
     public CartPage removeProductFromCart() {
         return Allure.step("Remove \"" + productName + "\" product from cart",
                 () -> {
-                    removeProductButton.click();
-                    waitUntilPageIsLoaded();
+                    clickOnElementAndWaitPageLoad(removeProductButton);
                     cartPage.getProductTable().getProductNames();
                     return cartPage;
                 });
@@ -91,10 +90,8 @@ public class CartProduct extends Product {
             long quantityOnField = getQuantityFromField();
             if (quantityOnField != quantity) {
                 quantityField.clear();
-                quantityField.sendKeys(String.valueOf(quantity));
-                quantityField.sendKeys(Keys.ENTER);
-                waitUntilPageStartsRefreshing();
-                waitUntilPageIsLoaded();
+                enterText(quantityField, String.valueOf(quantity));
+                cartPage.clickOnUpdateCartButton();
                 if (cartPage.getProductTable().getProductNames().length == 0) {
                     return;
                 }
