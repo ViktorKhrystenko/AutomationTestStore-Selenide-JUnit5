@@ -1,6 +1,7 @@
 package tests;
 
 import annotations.Seed;
+import listeners.testng.BrowserTaggingListener;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
@@ -15,7 +16,7 @@ import utils.driver.DriverManager;
 
 import java.lang.reflect.Method;
 
-@Listeners({SeedLoggingListener.class})
+@Listeners({SeedLoggingListener.class, BrowserTaggingListener.class})
 public abstract class BaseTest {
     @Getter
     protected WebDriver driver;
