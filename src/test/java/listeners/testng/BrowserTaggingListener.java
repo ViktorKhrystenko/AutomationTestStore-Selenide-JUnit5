@@ -17,5 +17,9 @@ public class BrowserTaggingListener implements ITestListener {
     public void onTestStart(org.testng.ITestResult result) {
         Allure.story(BROWSER);
         Allure.label("tag", BROWSER);
+        Allure.getLifecycle().updateTestCase(testCase -> {
+            testCase.setName(testCase.getName() + " [" + BROWSER + "]");
+            testCase.setHistoryId(testCase.getHistoryId() + "-[" + BROWSER + "[");
+        });
     }
 }
