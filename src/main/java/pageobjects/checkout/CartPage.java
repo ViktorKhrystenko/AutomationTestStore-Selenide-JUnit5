@@ -1,10 +1,13 @@
 package pageobjects.checkout;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.PageWithProductTable;
 import pageobjects.components.products.table.ProductTable;
@@ -13,7 +16,11 @@ import pageobjects.components.products.table.item.CartProduct;
 import java.util.regex.Pattern;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.Wait;
+import static constants.FormValues.DESELECTED_OPTION;
 import static constants.url.BaseUrls.CART_BASE_URL;
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
+import static pageobjects.registration.RegistrationDropdown.REGION_STATE_DROPDOWN;
 
 public class CartPage extends BasePage implements PageWithProductTable<CartProduct> {
     private static final String BASE_URL = CART_BASE_URL;
@@ -66,7 +73,14 @@ public class CartPage extends BasePage implements PageWithProductTable<CartProdu
 
     @Step("Select random country")
     public CartPage selectRandomCountry() {
+        Select stateDropdown = new Select(WebDriverRunner.getWebDriver().findElement(STATE_DROPDOWN_LOCATOR));
+        WebElement firstStateOption = stateDropdown
+                .getOptions().stream()
+                .filter(option -> !option.getText().equals(DESELECTED_OPTION)
+                        & !option.getText().equals(stateDropdown.getFirstSelectedOption().getText()))
+                .toList().get(0);
         selectRandomOption(COUNTRY_DROPDOWN_LOCATOR);
+        Wait().until(stalenessOf(firstStateOption));
         return this;
     }
 

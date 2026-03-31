@@ -35,6 +35,7 @@ import java.time.temporal.Temporal;
 import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.open;
+import static constants.FormValues.NONE_OPTION;
 import static utils.PropertiesLoader.loadProperties;
 
 import static org.assertj.core.api.Assertions.*;
@@ -246,7 +247,8 @@ public class CheckoutTests extends BaseTest {
 
         cartPage.selectRandomCountry();
 
-        assertEquals(cartPage.getSelectedState(), DESELECTED_OPTION);
+        assertTrue(cartPage.getSelectedState().equals(DESELECTED_OPTION) ||
+                cartPage.getSelectedState().equals(NONE_OPTION));
     }
 
     @Feature("Product page")

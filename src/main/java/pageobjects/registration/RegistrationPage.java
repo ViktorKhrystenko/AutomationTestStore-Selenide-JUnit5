@@ -1,7 +1,5 @@
 package pageobjects.registration;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
@@ -10,7 +8,6 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
@@ -18,12 +15,12 @@ import utils.datagenerator.DataGenerator;
 
 import java.util.regex.Pattern;
 
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 import static pageobjects.registration.RegistrationField.*;
 import static pageobjects.registration.RegistrationDropdown.*;
 
@@ -71,7 +68,7 @@ public class RegistrationPage extends BasePage {
                         & !option.getText().equals(regionStateDropdown.getFirstSelectedOption().getText()))
                 .toList().get(0);
         selectRandomOption(COUNTRY_DROPDOWN.getLocator());
-        Wait().until(ExpectedConditions.stalenessOf(firstRegionStateOption));
+        Wait().until(stalenessOf(firstRegionStateOption));
         return this;
     }
 
