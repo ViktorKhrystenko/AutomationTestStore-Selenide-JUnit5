@@ -1,17 +1,16 @@
 package pageobjects.login;
 
+import com.codeborne.selenide.SelenideElement;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 import pageobjects.account.AccountPage;
 import pageobjects.registration.RegistrationPage;
 
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 import static constants.url.BaseUrls.LOGIN_BASE_URL;
 import static utils.StringFormatHelper.trimCloseAlertCross;
 
@@ -19,26 +18,19 @@ public class LoginPage extends BasePage {
     private static final String BASE_URL = LOGIN_BASE_URL;
     private static final String PAGE_NAME = "Login page";
 
-    @FindBy(xpath = "//*[@id='accountFrm']//button[@type='submit']")
-    private WebElement toRegistrationPageButton;
+    private SelenideElement toRegistrationPageButton = $x("//*[@id='accountFrm']//button[@type='submit']");
 
-    @FindBy(id = "loginFrm_loginname")
-    private WebElement loginNameField;
+    private SelenideElement loginNameField = $("#loginFrm_loginname");
 
-    @FindBy(id = "loginFrm_password")
-    private WebElement passwordField;
+    private SelenideElement passwordField = $("#loginFrm_password");
 
-    @FindBy(xpath = "//*[@id='loginFrm']//button[@type='submit']")
-    private WebElement loginButton;
+    private SelenideElement loginButton = $x("//*[@id='loginFrm']//button[@type='submit']");
 
-    @FindBy(xpath = "//div[contains(@class, 'alert-danger')]")
-    private WebElement loginErrorAlert;
+    private SelenideElement loginErrorAlert = $x("//div[contains(@class, 'alert-danger')]");
 
 
-    public LoginPage(WebDriver driver) throws PageNavigationException {
-        super(driver);
+    public LoginPage() throws PageNavigationException {
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
-        PageFactory.initElements(driver, this);
     }
 
 
@@ -58,18 +50,18 @@ public class LoginPage extends BasePage {
     @Step("Click on 'Login' button")
     public AccountPage clickOnLoginButton() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(loginButton);
-        return new AccountPage(driver);
+        return new AccountPage();
     }
 
     @Step("Click on 'To registration page' button")
     public RegistrationPage clickOnToRegistrationPageButton() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(toRegistrationPageButton);
-        return new RegistrationPage(driver);
+        return new RegistrationPage();
     }
 
 
     public String getLoginErrorMessage() {
-        String loginErrorMessage = loginErrorAlert.getText();
+        String loginErrorMessage = loginErrorAlert.text();
         return trimCloseAlertCross(loginErrorMessage);
     }
 }

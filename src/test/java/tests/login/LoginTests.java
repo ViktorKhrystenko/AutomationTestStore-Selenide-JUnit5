@@ -1,5 +1,6 @@
 package tests.login;
 
+import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Epic;
@@ -12,6 +13,7 @@ import tests.BaseTest;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.open;
 import static utils.PropertiesLoader.loadProperties;
 
 import static constants.ResourcesPaths.LOGIN_TEST_DATA_PATH;
@@ -35,8 +37,8 @@ public class LoginTests extends BaseTest {
 
     @BeforeMethod(alwaysRun = true)
     public void setupLogin() {
-        driver.get(LOGIN_BASE_URL);
-        loginPage = new LoginPage(driver);
+        open(LOGIN_BASE_URL);
+        loginPage = new LoginPage();
 
         Properties testUserData = loadProperties(TEST_DATA_FILE_PATH);
         user = generator.generateUser();
@@ -59,7 +61,7 @@ public class LoginTests extends BaseTest {
                 .doesNotThrowAnyException();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(ACCOUNT_BASE_URL)));
     }
 
@@ -77,7 +79,7 @@ public class LoginTests extends BaseTest {
                 .isThrownBy(() -> loginPage.clickOnLoginButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(LOGIN_BASE_URL)));
 
         assertThat(loginPage.getLoginErrorMessage())
@@ -100,7 +102,7 @@ public class LoginTests extends BaseTest {
                 .isThrownBy(() -> loginPage.clickOnLoginButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(LOGIN_BASE_URL)));
 
         assertThat(loginPage.getLoginErrorMessage())
@@ -121,7 +123,7 @@ public class LoginTests extends BaseTest {
                 .isThrownBy(() -> loginPage.clickOnLoginButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(LOGIN_BASE_URL)));
 
         assertThat(loginPage.getLoginErrorMessage())
@@ -144,7 +146,7 @@ public class LoginTests extends BaseTest {
                 .isThrownBy(() -> loginPage.clickOnLoginButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(LOGIN_BASE_URL)));
 
         assertThat(loginPage.getLoginErrorMessage())

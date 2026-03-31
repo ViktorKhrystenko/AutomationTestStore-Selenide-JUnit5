@@ -1,16 +1,19 @@
 package pageobjects.products;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import exceptions.PageNavigationException;
 import exceptions.ProductCardNotFoundException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageobjects.BasePage;
 import pageobjects.components.products.ProductCard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static com.codeborne.selenide.Selenide.$$;
 
 public abstract class PageWithProducts extends BasePage {
     private static final By PRODUCT_CARD_LOCATOR = By.xpath(
@@ -22,8 +25,7 @@ public abstract class PageWithProducts extends BasePage {
     private List<ProductCard> productCards;
 
 
-    public PageWithProducts(WebDriver driver, String baseUrl, String pageName) throws PageNavigationException {
-        super(driver);
+    public PageWithProducts(String baseUrl, String pageName) throws PageNavigationException {
         BASE_URL = baseUrl;
         PAGE_NAME = pageName;
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
@@ -37,15 +39,15 @@ public abstract class PageWithProducts extends BasePage {
                 return productCard;
             }
         }
-        throw new ProductCardNotFoundException(productName, PAGE_NAME, driver.getCurrentUrl());
+        throw new ProductCardNotFoundException(productName, PAGE_NAME, WebDriverRunner.url());
     }
 
 
     private void initProductCardsList() {
         productCards = new ArrayList<>();
-        List<WebElement> productCardsElements = driver.findElements(PRODUCT_CARD_LOCATOR);
-        for (WebElement productCardElement: productCardsElements) {
-            productCards.add(new ProductCard(driver, productCardElement));
+        ElementsCollection productCardsElements = $$(PRODUCT_CARD_LOCATOR);
+        for (SelenideElement productCardElement: productCardsElements) {
+            productCards.add(new ProductCard(productCardElement));
         }
     }
 }

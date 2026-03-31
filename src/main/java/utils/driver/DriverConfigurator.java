@@ -1,11 +1,8 @@
 package utils.driver;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import com.codeborne.selenide.Configuration;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.HashMap;
@@ -13,17 +10,20 @@ import java.util.Map;
 
 import static config.ConfigReader.readConfigProperty;
 
-public class DriverFactory {
+public class DriverConfigurator {
 
-    public static WebDriver createDriver() {
+    // TODO Config browsers for Selenide
+    public static void configureDriver() {
         String runTarget = readConfigProperty("run.target", "local");
         String browser = readConfigProperty("browser", "chrome");
         switch (runTarget.toLowerCase()) {
             case "local":
-                return createLocalDriver(browser);
+                configureLocalDriver(browser);
+                break;
 
             case "jenkins-docker-agent":
-                return createJenkinsDockerAgentDriver(browser);
+                configureJenkinsDockerAgentDriver(browser);
+                break;
 
             default:
                 throw new IllegalArgumentException("Unsupported \"run.target\" value: " + runTarget);
@@ -31,21 +31,24 @@ public class DriverFactory {
     }
 
 
-    private static WebDriver createLocalDriver(String browser) {
+    private static void configureLocalDriver(String browser) {
         switch (browser.toLowerCase()) {
             case "chrome": {
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments("--start-maximized")
                         .addArguments("--disable-notifications")
                         .addArguments("--incognito");
-                return new ChromeDriver(options);
+                Configuration.browser = browser;
+                Configuration.browserCapabilities = options;
+                break;
             }
             case "firefox": {
                 FirefoxOptions options = new FirefoxOptions();
-                options.addArguments("--width=1920")
-                        .addArguments("--height=1080")
-                        .addArguments("-private");
-                return new FirefoxDriver(options);
+                options.addArguments("-private");
+                Configuration.browser = browser;
+                Configuration.browserSize = "1920x1080";
+                Configuration.browserCapabilities = options;
+                break;
             }
             case "edge": {
                 EdgeOptions options = new EdgeOptions();
@@ -56,38 +59,42 @@ public class DriverFactory {
                 Map<String, Object> preferences = new HashMap<>();
                 preferences.put("translate_enabled", false);
                 options.setExperimentalOption("prefs", preferences);
-                return new EdgeDriver(options);
+                Configuration.browser = browser;
+                Configuration.browserCapabilities = options;
+                break;
             }
             default:
                 throw new IllegalArgumentException("Unsupported \"browser\" value: " + browser);
         }
     }
 
-    private static WebDriver createJenkinsDockerAgentDriver(String browser) {
+    private static void configureJenkinsDockerAgentDriver(String browser) {
         switch (browser.toLowerCase()) {
             case "chrome": {
                 ChromeOptions options = new ChromeOptions();
-                options.addArguments("--window-size=1920,1080")
-                        .addArguments("--headless=new")
-                        .addArguments("--no-sandbox")
+                options.addArguments("--no-sandbox")
                         .addArguments("--disable-notifications")
                         .addArguments("--disable-gpu")
                         .addArguments("--disable-dev-shm-usage")
                         .addArguments("--remote-allow-origins=*");
-                return new ChromeDriver(options);
+                Configuration.browser = browser;
+                Configuration.browserSize = "1920x1080";
+                Configuration.headless = true;
+                Configuration.browserCapabilities = options;
+                break;
             }
             case "firefox": {
                 FirefoxOptions options = new FirefoxOptions();
-                options.addArguments("--width=1920")
-                        .addArguments("--height=1080")
-                        .addArguments("-headless");
-                return new FirefoxDriver(options);
+                options.addArguments("-private");
+                Configuration.browser = browser;
+                Configuration.browserSize = "1920x1080";
+                Configuration.headless = true;
+                Configuration.browserCapabilities = options;
+                break;
             }
             case "edge": {
                 EdgeOptions options = new EdgeOptions();
-                options.addArguments("--window-size=1920,1080")
-                        .addArguments("--guest")
-                        .addArguments("--headless=new")
+                options.addArguments("--guest")
                         .addArguments("--no-sandbox")
                         .addArguments("--disable-notifications")
                         .addArguments("--disable-gpu")
@@ -96,7 +103,11 @@ public class DriverFactory {
                 Map<String, Object> preferences = new HashMap<>();
                 preferences.put("translate_enabled", false);
                 options.setExperimentalOption("prefs", preferences);
-                return new EdgeDriver(options);
+                Configuration.browser = browser;
+                Configuration.browserSize = "1920x1080";
+                Configuration.headless = true;
+                Configuration.browserCapabilities = options;
+                break;
             }
             default:
                 throw new IllegalArgumentException("Unsupported \"browser\" value: " + browser);

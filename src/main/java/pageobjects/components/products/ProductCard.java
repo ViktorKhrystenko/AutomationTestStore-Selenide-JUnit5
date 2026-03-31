@@ -1,10 +1,9 @@
 package pageobjects.components.products;
 
+import com.codeborne.selenide.SelenideElement;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageobjects.BasePage;
 import pageobjects.products.ProductPage;
 
@@ -20,15 +19,14 @@ public class ProductCard extends BasePage {
 
     private static final By PRODUCT_TITLE_LOCATOR = By.className("prdocutname");
 
-    private WebElement productCardElement;
+    private SelenideElement productCardElement;
 
-    private WebElement productTitleElement;
+    private SelenideElement productTitleElement;
 
 
-    public ProductCard(WebDriver driver, WebElement productCardElement) {
-        super(driver);
+    public ProductCard(SelenideElement productCardElement) {
         this.productCardElement = productCardElement;
-        productTitleElement = productCardElement.findElement(PRODUCT_TITLE_LOCATOR);
+        productTitleElement = productCardElement.$(PRODUCT_TITLE_LOCATOR);
     }
 
 
@@ -44,16 +42,16 @@ public class ProductCard extends BasePage {
                     clickOnElementAndWaitPageLoad(productTitleElement);
                     Optional<Integer> path = getPathFromHref(productTitleHref);
                     if (path.isEmpty()) {
-                        return new ProductPage(driver, productId, productName);
+                        return new ProductPage(productId, productName);
                     }
                     else {
-                        return new ProductPage(driver, path.get(), productId, productName);
+                        return new ProductPage(path.get(), productId, productName);
                     }
                 });
     }
 
     public String getProductName() {
-        return productTitleElement.getText();
+        return productTitleElement.text();
     }
 
 
