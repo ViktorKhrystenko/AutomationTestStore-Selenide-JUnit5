@@ -3,11 +3,15 @@ package pageobjects.registration;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
 import utils.datagenerator.DataGenerator;
@@ -60,14 +64,14 @@ public class RegistrationPage extends BasePage {
 
     @Step("Select random option in 'Country' dropdown")
     public RegistrationPage selectRandomCountry() {
-        SelenideElement regionStateDropdown = $(REGION_STATE_DROPDOWN.getLocator());
-        SelenideElement firstRegionStateOption = regionStateDropdown
-                .getOptions()
-                .filter(not(text(DESELECTED_OPTION)))
-                .filter(not(text(regionStateDropdown.getSelectedOptionText())))
-                .get(0);
+        Select regionStateDropdown = new Select(WebDriverRunner.getWebDriver().findElement(REGION_STATE_DROPDOWN.getLocator()));
+        WebElement firstRegionStateOption = regionStateDropdown
+                .getOptions().stream()
+                .filter(option -> !option.getText().equals(DESELECTED_OPTION)
+                        & !option.getText().equals(regionStateDropdown.getFirstSelectedOption().getText()))
+                .toList().get(0);
         selectRandomOption(COUNTRY_DROPDOWN.getLocator());
-        firstRegionStateOption.should(disappear);
+        Wait().until(ExpectedConditions.stalenessOf(firstRegionStateOption));
         return this;
     }
 
