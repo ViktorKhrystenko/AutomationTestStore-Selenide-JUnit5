@@ -12,7 +12,6 @@ import static config.ConfigReader.readConfigProperty;
 
 public class DriverConfigurator {
 
-    // TODO Config browsers for Selenide
     public static void configureDriver() {
         String runTarget = readConfigProperty("run.target", "local");
         String browser = readConfigProperty("browser", "chrome");
