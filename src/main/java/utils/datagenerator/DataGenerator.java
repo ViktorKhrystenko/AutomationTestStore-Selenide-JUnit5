@@ -17,43 +17,12 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 
 public class DataGenerator {
-    @Getter
-    private final long ORIGINAL_SEED;
-
-    private long seed;
-
-
-    public DataGenerator() {
-        Random random = new Random();
-        ORIGINAL_SEED = random.nextLong();
-        seed = ORIGINAL_SEED;
-    }
-
-    public DataGenerator(long seed) {
-        ORIGINAL_SEED = seed;
-        this.seed = seed;
-    }
-
-
-    private Settings getSeedSettings() {
-        return Settings.create()
-                .set(Keys.SEED, nextSeed());
-    }
-
-    private long nextSeed() {
-        long currentSeed = seed;
-        seed++;
-        return currentSeed;
-    }
-
-
-    public User generateUser() {
+    public static User generateUser() {
         String telephonePattern = "+" + "#d".repeat(
-                Instancio.gen().withSettings(getSeedSettings())
+                Instancio.gen()
                         .ints().range(7, 15).get());
 
         User user = Instancio.of(User.class)
-                .withSettings(getSeedSettings())
                 .generate(field("firstName"), gen -> gen.string().mixedCase()
                         .minLength(1).maxLength(32))
                 .generate(field("lastName"), gen -> gen.string().mixedCase()
@@ -81,39 +50,39 @@ public class DataGenerator {
         return user;
     }
 
-    public int generateInt(int minValue, int maxValue) {
-        return Instancio.gen().withSettings(getSeedSettings())
+    public static int generateInt(int minValue, int maxValue) {
+        return Instancio.gen()
                 .ints().range(minValue, maxValue).get();
     }
 
-    public <T> T selectRandomOption(List<T> options) {
+    public static <T> T selectRandomOption(List<T> options) {
         int optionIndex = generateInt(0, options.size() - 1);
         return options.get(optionIndex);
     }
 
 
-    public String randomString(int minLength) {
-        return Instancio.gen().withSettings(getSeedSettings())
+    public static String randomString(int minLength) {
+        return Instancio.gen()
                 .string().mixedCase().minLength(minLength).get();
     }
 
-    public String randomString(int minLength, int maxLength) {
-        return Instancio.gen().withSettings(getSeedSettings())
+    public static String randomString(int minLength, int maxLength) {
+        return Instancio.gen()
                 .string().mixedCase()
                 .minLength(minLength)
                 .maxLength(maxLength)
                 .get();
     }
 
-    public String randomNumericString(int minLength) {
-        return Instancio.gen().withSettings(getSeedSettings())
+    public static String randomNumericString(int minLength) {
+        return Instancio.gen()
                 .string().digits()
                 .minLength(minLength)
                 .get();
     }
 
-    public String randomNumericString(int minLength, int maxLength) {
-        return Instancio.gen().withSettings(getSeedSettings())
+    public static String randomNumericString(int minLength, int maxLength) {
+        return Instancio.gen()
                 .string().digits()
                 .minLength(minLength)
                 .maxLength(maxLength)
@@ -121,42 +90,42 @@ public class DataGenerator {
     }
 
 
-    public String generateValidEmail() {
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+    public static String generateValidEmail() {
+        return Instancio.of(String.class)
                 .generate(root(), gen -> gen.net().email())
                 .create();
     }
 
-    public String generateRandomInvalidEmail() {
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+    public static String generateRandomInvalidEmail() {
+        return Instancio.of(String.class)
                 .supply(root(), new InvalidEmailGenerator())
                 .create();
     }
 
-    public String generateInvalidEmail(EmailErrorType errorType) {
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+    public static String generateInvalidEmail(EmailErrorType errorType) {
+        return Instancio.of(String.class)
                 .supply(root(), new InvalidEmailGenerator(errorType))
                 .create();
     }
 
 
-    public String generateValidTelephone() {
+    public static String generateValidTelephone() {
         String telephonePattern = "+" + "#d".repeat(
-                Instancio.gen().withSettings(getSeedSettings())
+                Instancio.gen()
                         .ints().range(7, 15).get());
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+        return Instancio.of(String.class)
                 .generate(root(), gen -> gen.text().pattern(telephonePattern))
                 .create();
     }
 
-    public String generateRandomInvalidTelephone() {
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+    public static String generateRandomInvalidTelephone() {
+        return Instancio.of(String.class)
                 .generate(root(), new InvalidTelephoneGenerator())
                 .create();
     }
 
-    public String generateInvalidTelephone(TelephoneErrorType errorType) {
-        return Instancio.of(String.class).withSettings(getSeedSettings())
+    public static String generateInvalidTelephone(TelephoneErrorType errorType) {
+        return Instancio.of(String.class)
                 .generate(root(), new InvalidTelephoneGenerator(errorType))
                 .create();
     }

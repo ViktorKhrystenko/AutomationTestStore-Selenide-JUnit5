@@ -1,6 +1,6 @@
 # Automation Test Store
 
-The test automation framework for `automationteststore.com` written on Selenide/TestNG with Allure Reports and Jenkins integrations.
+The test automation framework for `automationteststore.com` written on Selenide/JUnit5 with Allure Reports and Jenkins integrations.
 
 ## Allure
 
@@ -8,17 +8,17 @@ Run `mvn allure:serve` in the terminal from the root of the project.
 
 ## Maven parameters
 
-### -DsuiteXmlFile="${suiteXmlFile}"
+### -Dtest="${testClassNames}"
 
-Parameter specifies .xml file, that will be used to run test suite, where `${suiteXmlFile}` is .xml file with TestNG suites. .xml files are stored in `src/test/resources/testng/xml` directory.
+Parameter specifies test class names, that will be launched, where `${testClassNames}` is test class. Any non-abstract test class from `tests` package can be used. You can specify more than one test class, separating them by comma.
 
-Default value is `src/test/resources/testng/xml/testng.xml`. It will run all tests.
+Default value all tests will be launched.
 
 ### -Dgroups="${groups}"
 
-Parameter specifies groups, that will be run, where `${groups}` is groups. You can specify more than one group, separating them by comma.
+Parameter specifies tags tests must have to be launched, where `${groups}` is groups. You can specify more than one tag, separating them by comma.
 
-By default, all groups are included.
+By default, all test tags are included.
 
 ### -Drun.target="${run.target}"
 
