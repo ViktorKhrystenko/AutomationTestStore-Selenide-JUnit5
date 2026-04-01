@@ -12,7 +12,7 @@ Run `mvn allure:serve` in the terminal from the root of the project.
 
 Parameter specifies test class names, that will be launched, where `${testClassNames}` is test class. Any non-abstract test class from `tests` package can be used. You can specify more than one test class, separating them by comma.
 
-Default value all tests will be launched.
+By default, all tests will be launched.
 
 ### -Dgroups="${groups}"
 
