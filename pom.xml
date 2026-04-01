@@ -13,8 +13,6 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <suiteXmlFile>src/test/resources/testng/xml/testng.xml</suiteXmlFile>
-
         <allure.version>2.33.0</allure.version>
         <aspectj.version>1.9.25.1</aspectj.version>
         <junit.version>6.0.3</junit.version>
@@ -111,9 +109,6 @@
                 <version>3.5.4</version>
 
                 <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                    </suiteXmlFiles>
 
                     <testFailureIgnore>false</testFailureIgnore>
                     <argLine>
