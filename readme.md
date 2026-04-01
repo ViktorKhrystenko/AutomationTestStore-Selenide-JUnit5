@@ -1,6 +1,6 @@
 # Automation Test Store
 
-The test automation framework for `automationteststore.com` written on Selenium/TestNG with Allure Reports and Jenkins integrations.
+The test automation framework for `automationteststore.com` written on Selenide/TestNG with Allure Reports and Jenkins integrations.
 
 ## Allure
 
