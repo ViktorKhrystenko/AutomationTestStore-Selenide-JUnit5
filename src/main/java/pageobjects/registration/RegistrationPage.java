@@ -1,14 +1,13 @@
 package pageobjects.registration;
 
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import pageobjects.BasePage;
 import pageobjects.registration.success.SuccessfulRegistrationPage;
@@ -16,10 +15,12 @@ import utils.datagenerator.DataGenerator;
 
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.*;
 import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
 
 import static constants.FormValues.DESELECTED_OPTION;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 import static pageobjects.registration.RegistrationField.*;
 import static pageobjects.registration.RegistrationDropdown.*;
 
@@ -31,20 +32,15 @@ public class RegistrationPage extends BasePage {
 
     private static final By ERROR_MESSAGE_LOCATOR = By.xpath("following-sibling::span");
 
-    @FindBy(id = "AccountFrm_agree")
-    private WebElement privacyPolicyCheckbox;
+    private SelenideElement privacyPolicyCheckbox = $("#AccountFrm_agree");
 
-    @FindBy(xpath = "//button[@title='Continue']")
-    private WebElement continueButton;
+    private SelenideElement continueButton = $x("//button[@title='Continue']");
 
-    @FindBy(xpath = "//div[contains(@class, 'alert-danger')]")
-    private WebElement registrationErrorAlert;
+    private SelenideElement registrationErrorAlert = $x("//div[contains(@class, 'alert-danger')]");
 
 
-    public RegistrationPage(WebDriver driver) throws PageNavigationException {
-        super(driver);
+    public RegistrationPage() throws PageNavigationException {
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
-        PageFactory.initElements(driver, this);
     }
 
 
@@ -65,14 +61,21 @@ public class RegistrationPage extends BasePage {
 
     @Step("Select random option in 'Country' dropdown")
     public RegistrationPage selectRandomCountry() {
+        Select regionStateDropdown = new Select(WebDriverRunner.getWebDriver().findElement(REGION_STATE_DROPDOWN.getLocator()));
+        WebElement firstRegionStateOption = regionStateDropdown
+                .getOptions().stream()
+                .filter(option -> !option.getText().equals(DESELECTED_OPTION)
+                        & !option.getText().equals(regionStateDropdown.getFirstSelectedOption().getText()))
+                .toList().get(0);
         selectRandomOption(COUNTRY_DROPDOWN.getLocator());
+        Wait().until(stalenessOf(firstRegionStateOption));
         return this;
     }
 
     @Step("Deselect 'Country' dropdown")
     public RegistrationPage deselectCountry() {
-        Select countrySelect = new Select(driver.findElement(COUNTRY_DROPDOWN.getLocator()));
-        countrySelect.selectByVisibleText(DESELECTED_OPTION);
+        SelenideElement countrySelect = $(COUNTRY_DROPDOWN.getLocator());
+        countrySelect.selectOptionContainingText(DESELECTED_OPTION);
         return this;
     }
 
@@ -149,23 +152,23 @@ public class RegistrationPage extends BasePage {
     @Step("Click on 'Continue' button")
     public SuccessfulRegistrationPage clickOnContinueButton() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(continueButton);
-        return new SuccessfulRegistrationPage(driver);
+        return new SuccessfulRegistrationPage();
     }
 
 
     public String getRegionStateDropdownCurrentOption() {
-        return getSelectedOption(REGION_STATE_DROPDOWN.getLocator()).getText();
+        return getSelectedOption(REGION_STATE_DROPDOWN.getLocator()).text();
     }
 
     public String getInputErrorMessage(RegistrationInput input) {
-        return driver.findElement(input.getLocator())
-                .findElement(PARENT_ELEMENT_LOCATOR)
-                .findElement(ERROR_MESSAGE_LOCATOR)
-                .getText();
+        return $(input.getLocator())
+                .parent()
+                .$(ERROR_MESSAGE_LOCATOR)
+                .text();
     }
 
     public String getRegistrationErrorMessage() {
-        String registrationErrorMessage = registrationErrorAlert.getText();
+        String registrationErrorMessage = registrationErrorAlert.text();
         return trimCloseAlertCross(registrationErrorMessage);
     }
 }

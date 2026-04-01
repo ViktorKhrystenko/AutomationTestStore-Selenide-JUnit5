@@ -1,13 +1,10 @@
 package pageobjects.checkout;
 
+import com.codeborne.selenide.SelenideElement;
 import dto.Address;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 import pageobjects.PageWithProductTable;
 import pageobjects.components.products.table.ProductTable;
@@ -15,6 +12,7 @@ import pageobjects.components.products.table.item.CheckoutConfirmProduct;
 
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.$;
 import static constants.url.BaseUrls.CHECKOUT_CONFIRM_BASE_URL;
 
 public class CheckoutConfirmPage extends BasePage implements PageWithProductTable<CheckoutConfirmProduct> {
@@ -30,32 +28,25 @@ public class CheckoutConfirmPage extends BasePage implements PageWithProductTabl
     private static final By TOTAL_PRICE_ELEMENT_LOCATOR =
             By.xpath("//span[text()='Total:']/parent::td/following-sibling::td");
 
-    @FindBy(css = ".confirm_shippment_options td:nth-child(1)")
-    private WebElement shippingAddressFullNameElement;
+    private SelenideElement shippingAddressFullNameElement = $(".confirm_shippment_options td:nth-child(1)");
 
-    @FindBy(css = ".confirm_shippment_options td:nth-child(2)")
-    private WebElement shippingAddressElement;
+    private SelenideElement shippingAddressElement = $(".confirm_shippment_options td:nth-child(2)");
 
-    @FindBy(css = ".confirm_payment_options td:nth-child(1)")
-    private WebElement paymentAddressFullNameElement;
+    private SelenideElement paymentAddressFullNameElement = $(".confirm_payment_options td:nth-child(1)");
 
-    @FindBy(css = ".confirm_payment_options td:nth-child(2)")
-    private WebElement paymentAddressElement;
+    private SelenideElement paymentAddressElement = $(".confirm_payment_options td:nth-child(2)");
 
-    @FindBy(id = "checkout_btn")
-    private WebElement confirmOrderButton;
+    private SelenideElement confirmOrderButton = $("#checkout_btn");
 
     private ProductTable<CheckoutConfirmProduct> productsInCart;
 
 
-    public CheckoutConfirmPage(WebDriver driver) throws PageNavigationException {
-        super(driver);
+    public CheckoutConfirmPage() throws PageNavigationException {
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
-        productsInCart = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
+        productsInCart = new ProductTable<>(PRODUCT_TABLE_ROWS_LOCATOR,
                 SUBTOTAL_PRICE_ELEMENT_LOCATOR, SHIPPING_PRICE_ELEMENT_LOCATOR,
                 TOTAL_PRICE_ELEMENT_LOCATOR,
-                productTableRow -> new CheckoutConfirmProduct(driver, productTableRow));
-        PageFactory.initElements(driver, this);
+                productTableRow -> new CheckoutConfirmProduct(productTableRow));
     }
 
 
@@ -77,7 +68,6 @@ public class CheckoutConfirmPage extends BasePage implements PageWithProductTabl
     @Step("Click on \"Confirm order\" button")
     public SuccessfulCheckoutPage clickOnConfirmOrderButton() throws PageNavigationException {
         clickOnElementAndWaitPageLoad(confirmOrderButton);
-        // performActionAndWaitPageLoad(() -> confirmOrderButton.click());
-        return new SuccessfulCheckoutPage(driver);
+        return new SuccessfulCheckoutPage();
     }
 }

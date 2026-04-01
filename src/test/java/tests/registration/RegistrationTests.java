@@ -1,5 +1,6 @@
 package tests.registration;
 
+import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Epic;
@@ -13,6 +14,7 @@ import tests.BaseTest;
 
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.open;
 import static constants.url.BaseUrls.REGISTRATION_BASE_URL;
 import static constants.url.BaseUrls.SUCCESSFUL_REGISTRATION_BASE_URL;
 import static constants.url.BaseUrls.HOME_BASE_URL;
@@ -42,9 +44,9 @@ public class RegistrationTests extends BaseTest {
 
     @BeforeMethod(alwaysRun = true)
     public void setupRegistration() {
-        driver.get(REGISTRATION_BASE_URL);
-        registrationPage = new RegistrationPage(driver);
-        navigation = new NavigationBar(driver);
+        open(REGISTRATION_BASE_URL);
+        registrationPage = new RegistrationPage();
+        navigation = new NavigationBar();
 
         user = generator.generateUser();
     }
@@ -57,13 +59,13 @@ public class RegistrationTests extends BaseTest {
             "smoke"
     })
     public void entranceTest() {
-        driver.get(HOME_BASE_URL);
+        open(HOME_BASE_URL);
 
         navigation.clickOnLoginOrRegisterLink()
                 .clickOnToRegistrationPageButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
     }
 
@@ -79,7 +81,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -95,7 +97,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -118,7 +120,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -140,7 +142,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -163,7 +165,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -185,7 +187,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -208,7 +210,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -231,7 +233,7 @@ public class RegistrationTests extends BaseTest {
         registrationPage.clickOnContinueButton();
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(SUCCESSFUL_REGISTRATION_BASE_URL)));
     }
 
@@ -269,7 +271,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(FIRST_NAME_FIELD))
@@ -292,7 +294,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(FIRST_NAME_FIELD))
@@ -318,7 +320,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(FIRST_NAME_FIELD))
@@ -341,7 +343,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(FIRST_NAME_FIELD))
@@ -367,7 +369,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(FIRST_NAME_FIELD))
@@ -391,7 +393,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LAST_NAME_FIELD))
@@ -414,7 +416,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LAST_NAME_FIELD))
@@ -440,7 +442,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LAST_NAME_FIELD))
@@ -463,7 +465,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LAST_NAME_FIELD))
@@ -489,7 +491,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LAST_NAME_FIELD))
@@ -513,7 +515,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(EMAIL_FIELD))
@@ -536,7 +538,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertFalse(isEmailValid(user.getEmail()));
@@ -569,7 +571,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(EMAIL_FIELD))
@@ -594,7 +596,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(TELEPHONE_FIELD))
@@ -618,7 +620,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(TELEPHONE_FIELD))
@@ -642,7 +644,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(TELEPHONE_FIELD))
@@ -666,7 +668,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(TELEPHONE_FIELD))
@@ -699,7 +701,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(TELEPHONE_FIELD))
@@ -723,7 +725,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ADDRESS_1_FIELD))
@@ -746,7 +748,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ADDRESS_1_FIELD))
@@ -769,7 +771,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ADDRESS_1_FIELD))
@@ -794,7 +796,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ADDRESS_2_FIELD))
@@ -818,7 +820,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ADDRESS_2_FIELD))
@@ -842,7 +844,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(CITY_FIELD))
@@ -865,7 +867,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(CITY_FIELD))
@@ -888,7 +890,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(CITY_FIELD))
@@ -914,7 +916,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(CITY_FIELD))
@@ -940,7 +942,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(CITY_FIELD))
@@ -964,7 +966,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ZIP_CODE_FIELD))
@@ -988,7 +990,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ZIP_CODE_FIELD))
@@ -1011,7 +1013,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ZIP_CODE_FIELD))
@@ -1037,7 +1039,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(ZIP_CODE_FIELD))
@@ -1068,7 +1070,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(REGION_STATE_DROPDOWN))
@@ -1099,7 +1101,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(COUNTRY_DROPDOWN))
@@ -1123,7 +1125,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LOGIN_NAME_FIELD))
@@ -1146,7 +1148,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LOGIN_NAME_FIELD))
@@ -1169,7 +1171,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LOGIN_NAME_FIELD))
@@ -1195,7 +1197,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LOGIN_NAME_FIELD))
@@ -1226,7 +1228,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(LOGIN_NAME_FIELD))
@@ -1250,7 +1252,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(PASSWORD_FIELD))
@@ -1273,7 +1275,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(PASSWORD_FIELD))
@@ -1296,7 +1298,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(PASSWORD_FIELD))
@@ -1320,7 +1322,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(PASSWORD_FIELD))
@@ -1343,7 +1345,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getInputErrorMessage(PASSWORD_FIELD))
@@ -1366,7 +1368,7 @@ public class RegistrationTests extends BaseTest {
                 .isThrownBy(() -> registrationPage.clickOnContinueButton());
 
         assertTrue(doesStringMatchRegex(
-                driver.getCurrentUrl(),
+                WebDriverRunner.url(),
                 Pattern.quote(REGISTRATION_BASE_URL)));
 
         assertThat(registrationPage.getRegistrationErrorMessage())

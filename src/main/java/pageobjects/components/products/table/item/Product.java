@@ -1,9 +1,8 @@
 package pageobjects.components.products.table.item;
 
+import com.codeborne.selenide.SelenideElement;
 import exceptions.WrongProductPriceCalculationException;
 import lombok.Getter;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageobjects.BasePage;
 
 import static utils.FloatNumberRounder.round;
@@ -16,8 +15,7 @@ public abstract class Product extends BasePage {
     protected long quantity;
 
 
-    public Product(WebDriver driver, WebElement tableRow) {
-        super(driver);
+    public Product(SelenideElement tableRow) {
         parseTableRowIntoFields(tableRow);
     }
 
@@ -36,5 +34,5 @@ public abstract class Product extends BasePage {
     }
 
 
-    protected abstract void parseTableRowIntoFields(WebElement tableRow);
+    protected abstract void parseTableRowIntoFields(SelenideElement tableRow);
 }

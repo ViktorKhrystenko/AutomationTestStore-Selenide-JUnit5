@@ -1,19 +1,18 @@
 package pageobjects.account.history;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.$$x;
 import static constants.url.BaseUrls.ORDER_HISTORY_BASE_URL;
 
 import static utils.StringFormatHelper.getTextAfterColon;
@@ -23,16 +22,13 @@ public class OrderHistoryPage extends BasePage {
     private static final String BASE_URL = ORDER_HISTORY_BASE_URL;
     private static final String PAGE_NAME = "Order history page";
 
-    @FindBy(xpath = "//div[@class='container-fluid mt20']")
-    private List<WebElement> orderElementsList;
+    private ElementsCollection orderElementsList = $$x("//div[@class='container-fluid mt20']");
 
     private final List<Order> orderList;
 
 
-    public OrderHistoryPage(WebDriver driver) throws PageNavigationException {
-        super(driver);
+    public OrderHistoryPage() throws PageNavigationException {
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
-        PageFactory.initElements(driver, this);
         orderList = new ArrayList<>();
         initOrderList();
     }
@@ -64,7 +60,7 @@ public class OrderHistoryPage extends BasePage {
         int orderId = getOrderId(orderIndex);
         clickOnElementAndWaitPageLoad(
                 getViewDetailsButton(orderIndex));
-        return new OrderPage(driver, orderId);
+        return new OrderPage(orderId);
     }
 
 
@@ -89,28 +85,28 @@ public class OrderHistoryPage extends BasePage {
         int orderId = getOrderIdOfMostResentOrder();
         clickOnElementAndWaitPageLoad(
                 getViewDetailsButton(0));
-        return new OrderPage(driver, orderId);
+        return new OrderPage(orderId);
     }
 
 
     private void initOrderList() {
         orderList.clear();
-        for (WebElement orderElement: orderElementsList) {
+        for (SelenideElement orderElement: orderElementsList) {
             orderList.add(new Order(orderElement));
         }
     }
 
 
-    private WebElement getViewDetailsButton(int orderIndex) {
+    private SelenideElement getViewDetailsButton(int orderIndex) {
         return orderList.get(orderIndex).getViewDetailsButton();
     }
 
 
     static class Order {
-        private static final By ORDER_ID_LOCATOR = By.xpath("//div/b[contains(text(), 'Order ID')]");
-        private static final By STATUS_LOCATOR = By.xpath("//div/b[contains(text(), 'Status')]");
-        private static final By PRODUCTS_QUANTITY_LOCATOR = By.xpath("//table//td[contains(text(), 'Products')]");
-        private static final By TOTAL_LOCATOR = By.xpath("//table//td[contains(text(), 'Total')]");
+        private static final By ORDER_ID_LOCATOR = By.xpath(".//div/b[contains(text(), 'Order ID')]");
+        private static final By STATUS_LOCATOR = By.xpath(".//div/b[contains(text(), 'Status')]");
+        private static final By PRODUCTS_QUANTITY_LOCATOR = By.xpath(".//table//td[contains(text(), 'Products')]");
+        private static final By TOTAL_LOCATOR = By.xpath(".//table//td[contains(text(), 'Total')]");
 
         @Getter
         private int orderId;
@@ -121,23 +117,24 @@ public class OrderHistoryPage extends BasePage {
         @Getter
         private double total;
         @Getter
-        private WebElement viewDetailsButton;
+        private SelenideElement viewDetailsButton;
 
 
-        public Order(WebElement orderElement) {
-            orderId = Integer.parseInt(getTextAfterColon(orderElement
-                    .findElement(ORDER_ID_LOCATOR)
-                    .findElement(PARENT_ELEMENT_LOCATOR).getText())
+        public Order(SelenideElement orderElement) {
+            orderId = Integer.parseInt(
+                    getTextAfterColon(orderElement
+                            .$(ORDER_ID_LOCATOR)
+                            .parent().text())
                     // substring to remove first '#' symbol
                     .substring(1));
             status = getTextAfterColon(orderElement
-                    .findElement(STATUS_LOCATOR)
-                    .findElement(PARENT_ELEMENT_LOCATOR).getText());
+                    .$(STATUS_LOCATOR)
+                    .parent().text());
             productsQuantity = Integer.parseInt(
-                    getTextAfterColon(orderElement.findElement(PRODUCTS_QUANTITY_LOCATOR).getText()));
+                    getTextAfterColon(orderElement.$(PRODUCTS_QUANTITY_LOCATOR).text()));
             total = parsePriceStringToDouble(
-                    getTextAfterColon(orderElement.findElement(TOTAL_LOCATOR).getText()));
-            viewDetailsButton = orderElement.findElement(By.id("button_edit"));
+                    getTextAfterColon(orderElement.$(TOTAL_LOCATOR).text()));
+            viewDetailsButton = orderElement.$("#button_edit");
         }
     }
 }

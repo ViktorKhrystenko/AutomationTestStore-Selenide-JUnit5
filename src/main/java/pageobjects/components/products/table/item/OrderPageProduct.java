@@ -1,8 +1,7 @@
 package pageobjects.components.products.table.item;
 
+import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,13 +14,13 @@ public class OrderPageProduct extends Product {
     private String modelNumber;
 
 
-    public OrderPageProduct(WebDriver driver, WebElement tableRow) {
-        super(driver, tableRow);
+    public OrderPageProduct(SelenideElement tableRow) {
+        super(tableRow);
     }
 
 
     @Override
-    protected void parseTableRowIntoFields(WebElement tableRow) {
+    protected void parseTableRowIntoFields(SelenideElement tableRow) {
         List<String> productFields = Arrays.stream(tableRow.getDomProperty("innerText")
                 .split("\t")).toList();
         // sublist to remove first image column

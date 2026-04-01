@@ -1,17 +1,16 @@
 package pageobjects.components.products.table.item;
 
+import com.codeborne.selenide.SelenideElement;
 import exceptions.WrongProductPriceCalculationException;
 import io.qameta.allure.Allure;
 import lombok.Getter;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageobjects.checkout.CartPage;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static com.codeborne.selenide.Selenide.$x;
 import static utils.FloatNumberRounder.round;
 import static utils.StringFormatHelper.parsePriceStringToDouble;
 
@@ -25,18 +24,18 @@ public class CartProduct extends Product {
 
     private final CartPage cartPage;
 
-    private WebElement cartTableRow;
+    private SelenideElement cartTableRow;
 
-    private WebElement quantityField;
-    private WebElement totalPriceElement;
-    private WebElement removeProductButton;
+    private SelenideElement quantityField;
+    private SelenideElement totalPriceElement;
+    private SelenideElement removeProductButton;
 
     @Getter
     private String modelNumber;
 
 
-    public CartProduct(WebDriver driver, CartPage cartPage, WebElement cartTableRow) {
-        super(driver, cartTableRow);
+    public CartProduct(CartPage cartPage, SelenideElement cartTableRow) {
+        super(cartTableRow);
         this.cartPage = cartPage;
         this.cartTableRow = cartTableRow;
         reLocateElements();
@@ -51,7 +50,7 @@ public class CartProduct extends Product {
     }
 
     @Override
-    protected void parseTableRowIntoFields(WebElement tableRow) {
+    protected void parseTableRowIntoFields(SelenideElement tableRow) {
         List<String> productFields = Arrays.stream(tableRow.getDomProperty("innerText")
                 .split("\t")).toList();
         // sublist to remove first image column
@@ -73,15 +72,15 @@ public class CartProduct extends Product {
 
 
     private void reLocateElements() {
-        cartTableRow = driver.findElement(By.xpath(String.format(
-                PRODUCT_TABLE_ROW_LOCATOR_FORMAT_PATTERN, modelNumber)));
-        quantityField = cartTableRow.findElement(QUANTITY_FIELD_LOCATOR);
-        totalPriceElement = cartTableRow.findElement(TOTAL_PRICE_ELEMENT_LOCATOR);
-        removeProductButton = cartTableRow.findElement(REMOVE_PRODUCT_BUTTON_LOCATOR);
+        cartTableRow = $x(String.format(
+                PRODUCT_TABLE_ROW_LOCATOR_FORMAT_PATTERN, modelNumber));
+        quantityField = cartTableRow.$(QUANTITY_FIELD_LOCATOR);
+        totalPriceElement = cartTableRow.$(TOTAL_PRICE_ELEMENT_LOCATOR);
+        removeProductButton = cartTableRow.$(REMOVE_PRODUCT_BUTTON_LOCATOR);
     }
 
     private long getQuantityFromField() {
-        return Long.parseLong(quantityField.getDomProperty("value"));
+        return Long.parseLong(quantityField.getValue());
     }
 
     private void setInitializationQuantity(long quantity) throws WrongProductPriceCalculationException {
@@ -100,8 +99,7 @@ public class CartProduct extends Product {
         }
         this.totalPrice = round(unitPrice * quantity, 2);
         if (totalPriceElement != null) {
-            waitUntilElementStopsBeingStale(totalPriceElement);
-            double totalPriceOnPage = parsePriceStringToDouble(totalPriceElement.getText());
+            double totalPriceOnPage = parsePriceStringToDouble(totalPriceElement.text());
             checkTotalPrice(totalPriceOnPage);
         }
     }

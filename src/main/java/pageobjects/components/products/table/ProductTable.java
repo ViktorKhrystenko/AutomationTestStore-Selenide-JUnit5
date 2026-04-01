@@ -1,9 +1,10 @@
 package pageobjects.components.products.table;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageobjects.BasePage;
 import pageobjects.components.products.table.item.Product;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.codeborne.selenide.Selenide.$$;
 import static utils.FloatNumberRounder.round;
 import static utils.StringFormatHelper.parsePriceStringToDouble;
 
@@ -23,7 +25,7 @@ public class ProductTable<T extends Product> extends BasePage {
     private final By SHIPPING_PRICE_ELEMENT_LOCATOR;
     private final By TOTAL_PRICE_ELEMENT_LOCATOR;
 
-    private final Function<WebElement, T> INIT_PRODUCT_FUNCTION;
+    private final Function<SelenideElement, T> INIT_PRODUCT_FUNCTION;
 
 
     private List<T> products;
@@ -33,11 +35,10 @@ public class ProductTable<T extends Product> extends BasePage {
     private double totalPrice;
 
 
-    public ProductTable(WebDriver driver, By productTableRowsLocator,
+    public ProductTable(By productTableRowsLocator,
                         By subtotalPriceElementLocator, By shippingPriceElementLocator,
-                        By totalPriceElementLocator, Function<WebElement, T> initProductFunction) {
-        super(driver);
-        PAGE_URL = driver.getCurrentUrl();
+                        By totalPriceElementLocator, Function<SelenideElement, T> initProductFunction) {
+        PAGE_URL = WebDriverRunner.url();
         this.PRODUCT_TABLE_ROWS_LOCATOR = productTableRowsLocator;
         this.SUBTOTAL_PRICE_ELEMENT_LOCATOR = subtotalPriceElementLocator;
         this.SHIPPING_PRICE_ELEMENT_LOCATOR = shippingPriceElementLocator;
@@ -56,7 +57,7 @@ public class ProductTable<T extends Product> extends BasePage {
             }
         }
         throw new IllegalArgumentException(String.format("There is (or was) no product with \"%s\" name on page with url: %s",
-                productName, driver.getCurrentUrl()));
+                productName, WebDriverRunner.url()));
     }
 
     public String[] getProductNames() {
@@ -115,8 +116,8 @@ public class ProductTable<T extends Product> extends BasePage {
 
     private void initProductsInCartList() {
         products = new ArrayList<>();
-        List<WebElement> productTableRows = driver.findElements(PRODUCT_TABLE_ROWS_LOCATOR);
-        for (WebElement productTableRow: productTableRows) {
+        ElementsCollection productTableRows = $$(PRODUCT_TABLE_ROWS_LOCATOR);
+        for (SelenideElement productTableRow: productTableRows) {
             products.add(INIT_PRODUCT_FUNCTION.apply(productTableRow));
         }
         if (!products.isEmpty()) {
@@ -153,6 +154,6 @@ public class ProductTable<T extends Product> extends BasePage {
 
 
     private boolean isOnInitialPage() {
-        return driver != null && driver.getCurrentUrl().equals(PAGE_URL);
+        return WebDriverRunner.url().equals(PAGE_URL);
     }
 }

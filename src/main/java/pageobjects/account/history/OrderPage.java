@@ -1,14 +1,11 @@
 package pageobjects.account.history;
 
+import com.codeborne.selenide.SelenideElement;
 import dto.Address;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import pageobjects.BasePage;
 import pageobjects.PageWithProductTable;
 import pageobjects.components.products.table.ProductTable;
@@ -21,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.$x;
 import static constants.url.BaseUrls.ORDER_BASE_URL;
 
 import static constants.DateTimePatterns.ORDER_PAGE_PATTERN;
@@ -39,32 +37,26 @@ public class OrderPage extends BasePage implements PageWithProductTable<OrderPag
     private final String PAGE_NAME;
     private final int orderId;
 
-    @FindBy(xpath = "//td/b[text()='Shipping Address']/../address")
-    private WebElement shippingAddressElement;
+    private SelenideElement shippingAddressElement = $x("//td/b[text()='Shipping Address']/../address");
 
-    @FindBy(xpath = "//td/b[text()='Payment Address']/../address")
-    private WebElement paymentAddressElement;
+    private SelenideElement paymentAddressElement = $x("//td/b[text()='Payment Address']/../address");
 
-    @FindBy(xpath = "//td/b[contains(text(), 'Order ID')]/parent::td")
-    private WebElement orderFirstColumn;
+    private SelenideElement orderFirstColumn = $x("//td/b[contains(text(), 'Order ID')]/parent::td");
 
-    @FindBy(xpath = "//th[text()='Date Added']/parent::tr/following-sibling::tr/td[1]")
-    private WebElement orderDateElement;
+    private SelenideElement orderDateElement = $x("//th[text()='Date Added']/parent::tr/following-sibling::tr/td[1]");
 
     private ProductTable<OrderPageProduct> orderedProducts;
 
 
-    public OrderPage(WebDriver driver, int orderId) throws PageNavigationException {
-        super(driver);
+    public OrderPage(int orderId) throws PageNavigationException {
         this.orderId = orderId;
         BASE_URL = ORDER_BASE_URL + String.valueOf(orderId);
         PAGE_NAME = String.format("Order #%d page", orderId);
         checkLocation(Pattern.quote(BASE_URL), PAGE_NAME);
-        orderedProducts = new ProductTable<>(driver, PRODUCT_TABLE_ROWS_LOCATOR,
+        orderedProducts = new ProductTable<>(PRODUCT_TABLE_ROWS_LOCATOR,
                 SUBTOTAL_PRICE_ELEMENT_LOCATOR, SHIPPING_PRICE_ELEMENT_LOCATOR,
                 TOTAL_PRICE_ELEMENT_LOCATOR,
-                productTableRow -> new OrderPageProduct(driver, productTableRow));
-        PageFactory.initElements(driver, this);
+                productTableRow -> new OrderPageProduct(productTableRow));
     }
 
 

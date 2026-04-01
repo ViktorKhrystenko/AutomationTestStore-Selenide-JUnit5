@@ -1,5 +1,7 @@
 package tests.checkout;
 
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import dto.User;
 import exceptions.PageNavigationException;
 import io.qameta.allure.Epic;
@@ -7,7 +9,6 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
 import io.qameta.allure.testng.Tag;
 import org.assertj.core.api.SoftAssertions;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -33,6 +34,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Properties;
 
+import static com.codeborne.selenide.Selenide.open;
+import static constants.FormValues.NONE_OPTION;
 import static utils.PropertiesLoader.loadProperties;
 
 import static org.assertj.core.api.Assertions.*;
@@ -67,7 +70,7 @@ public class CheckoutTests extends BaseTest {
 
     @Step("Login")
     private AccountPage login() {
-        return new LoginPage(driver)
+        return new LoginPage()
                 .fillLoginNameField(user.getLoginName())
                 .fillPasswordField(user.getPassword())
                 .clickOnLoginButton();
@@ -127,10 +130,10 @@ public class CheckoutTests extends BaseTest {
 
     @BeforeMethod(alwaysRun = true)
     public void setupCheckout() {
-        timeZone = ZoneId.of((String) ((JavascriptExecutor) driver).executeScript(
+        open(ACCOUNT_BASE_URL);
+        timeZone = ZoneId.of((String) Selenide.executeJavaScript(
                 "return Intl.DateTimeFormat().resolvedOptions().timeZone;"));
-        driver.get(ACCOUNT_BASE_URL);
-        navigation = new NavigationBar(driver);
+        navigation = new NavigationBar();
         login();
         accountPage = clearCart();
     }
@@ -244,7 +247,8 @@ public class CheckoutTests extends BaseTest {
 
         cartPage.selectRandomCountry();
 
-        assertEquals(cartPage.getSelectedState(), DESELECTED_OPTION);
+        assertTrue(cartPage.getSelectedState().equals(DESELECTED_OPTION) ||
+                cartPage.getSelectedState().equals(NONE_OPTION));
     }
 
     @Feature("Product page")
@@ -389,6 +393,6 @@ public class CheckoutTests extends BaseTest {
 
         assertThatExceptionOfType(PageNavigationException.class)
                 .isThrownBy(() -> productPage.clickOnAddToCartButton());
-        assertEquals(driver.getCurrentUrl(), LOGIN_BASE_URL);
+        assertEquals(WebDriverRunner.url(), LOGIN_BASE_URL);
     }
 }

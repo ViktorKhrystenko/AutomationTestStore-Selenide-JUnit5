@@ -1,7 +1,6 @@
 package pageobjects.components.products.table.item;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.codeborne.selenide.SelenideElement;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,13 +9,13 @@ import static utils.StringFormatHelper.parsePriceStringToDouble;
 
 public class CheckoutConfirmProduct extends Product {
 
-    public CheckoutConfirmProduct(WebDriver driver, WebElement tableRow) {
-        super(driver, tableRow);
+    public CheckoutConfirmProduct(SelenideElement tableRow) {
+        super(tableRow);
     }
 
 
     @Override
-    protected void parseTableRowIntoFields(WebElement tableRow) {
+    protected void parseTableRowIntoFields(SelenideElement tableRow) {
         List<String> productFields = Arrays.stream(tableRow.getDomProperty("innerText")
                 .split("\t")).toList();
         // sublist to remove first image column
