@@ -7,12 +7,9 @@ import exceptions.PageNavigationException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
-import io.qameta.allure.testng.Tag;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import pageobjects.account.AccountPage;
 import pageobjects.account.history.OrderHistoryPage;
 import pageobjects.account.history.OrderPage;
@@ -27,7 +24,6 @@ import pageobjects.login.LoginPage;
 import pageobjects.login.logout.LogoutPage;
 import pageobjects.products.ProductPage;
 import tests.BaseTest;
-import utils.datagenerator.DataGenerator;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -39,7 +35,9 @@ import static constants.FormValues.NONE_OPTION;
 import static utils.PropertiesLoader.loadProperties;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static utils.datagenerator.DataGenerator.*;
 
 import static constants.ResourcesPaths.CHECKOUT_TEST_DATA_PATH;
 
@@ -50,6 +48,7 @@ import static constants.FormValues.DESELECTED_OPTION;
 
 @Epic("Checkout")
 @Tag("checkout")
+@DisplayName("Checkout tests")
 public class CheckoutTests extends BaseTest {
     private static final String USER_TEST_DATA_FILE_PATH = CHECKOUT_TEST_DATA_PATH + "user.properties";
     private static final String PRODUCTS_TEST_DATA_FILE_PATH = CHECKOUT_TEST_DATA_PATH + "products.properties";
@@ -106,11 +105,11 @@ public class CheckoutTests extends BaseTest {
     }
 
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeAll
     public static void prepareTetsData() {
         Properties userTestData = loadProperties(USER_TEST_DATA_FILE_PATH);
         Properties productsTestData = loadProperties(PRODUCTS_TEST_DATA_FILE_PATH);
-        user = new DataGenerator().generateUser();
+        user = generateUser();
         user.setFirstName(userTestData.getProperty("first-name"));
         user.setLastName(userTestData.getProperty("last-name"));
         user.setEmail(userTestData.getProperty("email"));
@@ -128,7 +127,7 @@ public class CheckoutTests extends BaseTest {
         outOfStockProductName = productsTestData.getProperty("out-of-stock-product");
     }
 
-    @BeforeMethod(alwaysRun = true)
+    @BeforeEach
     public void setupCheckout() {
         open(ACCOUNT_BASE_URL);
         timeZone = ZoneId.of((String) Selenide.executeJavaScript(
@@ -139,12 +138,9 @@ public class CheckoutTests extends BaseTest {
     }
 
 
+    @Test
     @Tag("smoke")
-    @Test(description = "3.1.1.1. Test case - Entrance test",
-            groups = {
-            "checkout",
-            "smoke"
-    })
+    @DisplayName("3.1.1.1. Test case - Entrance test")
     public void entranceTest() {
         assertThatCode(() -> {
             accountPage.clickOnOrderHistoryIcon();
@@ -156,12 +152,9 @@ public class CheckoutTests extends BaseTest {
         }).doesNotThrowAnyException();
     }
 
+    @Test
     @Tag("critical-path")
-    @Test(description = "3.1.1.2. Test case - Check order of one product in stock",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.1.1.2. Test case - Check order of one product in stock")
     public void verifyCheckoutOrderingOneInStockProduct() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -190,12 +183,9 @@ public class CheckoutTests extends BaseTest {
         checkOrderPage(orderPage, checkoutProducts, actualOrderDate);
     }
 
+    @Test
     @Tag("critical-path")
-    @Test(description = "3.1.1.3. Test case - Check order of more than one product in stock",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.1.1.3. Test case - Check order of more than one product in stock")
     public void verifyCheckoutOrderingMultipleInStockProducts() {
         navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -232,13 +222,10 @@ public class CheckoutTests extends BaseTest {
         checkOrderPage(orderPage, checkoutProducts, actualOrderDate);
     }
 
+    @Test
     @Feature("Cart")
     @Tag("smoke")
-    @Test(description = "3.1.2.1. Test case - Check if \"State\" dropdown drops its value after changing \"Country\" value",
-            groups = {
-            "checkout",
-            "smoke"
-    })
+    @DisplayName("3.1.2.1. Test case - Check if \"State\" dropdown drops its value after changing \"Country\" value")
     public void verifyThatStateDropdownValueDropsAfterCountryValueChangedOnCartPage() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -251,13 +238,10 @@ public class CheckoutTests extends BaseTest {
                 cartPage.getSelectedState().equals(NONE_OPTION));
     }
 
+    @Test
     @Feature("Product page")
     @Tag("critical-path")
-    @Test(description = "3.2.1.1. Test case - Check adding zero products",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.2.1.1. Test case - Check adding zero products")
     public void verifyAddingProductToCartWithZeroQuantity() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -268,13 +252,10 @@ public class CheckoutTests extends BaseTest {
                 .isThrownBy(() -> productPage.clickOnAddToCartButton());
     }
 
+    @Test
     @Feature("Product page")
     @Tag("regression")
-    @Test(description = "3.2.1.2. Test case - Check adding more products than in stock",
-            groups = {
-            "checkout",
-            "regression"
-    })
+    @DisplayName("3.2.1.2. Test case - Check adding more products than in stock")
     public void verifyAddingMoreProductsToCartThanInStock() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(quantityLimitedProductName)
@@ -289,13 +270,10 @@ public class CheckoutTests extends BaseTest {
                 .getProductNames()[0].contains("***"));
     }
 
+    @Test
     @Feature("Product page")
     @Tag("critical-path")
-    @Test(description = "3.2.1.3. Test case - Check adding out of stock products",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.2.1.3. Test case - Check adding out of stock products")
     public void verifyAddingOutOfStockProductToCart() {
         ProductPage productPage = navigation.clickOnApparelAndAccessoriesCategoryPageLink()
                 .getProductCard(outOfStockProductName)
@@ -309,13 +287,10 @@ public class CheckoutTests extends BaseTest {
     }
 
 
+    @Test
     @Feature("Cart page")
     @Tag("critical-path")
-    @Test(description = "3.2.2.1. Test case - Check preceding to checkout after setting quantity to zero",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.2.2.1. Test case - Check preceding to checkout after setting quantity to zero")
     public void verifyPrecedingToCheckoutAfterSettingProductQuantityToZero() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -330,13 +305,10 @@ public class CheckoutTests extends BaseTest {
                 .isEmpty();
     }
 
+    @Test
     @Feature("Cart page")
     @Tag("regression")
-    @Test(description = "3.2.2.2. Test case - Check preceding to checkout after setting quantity to more than in stock",
-            groups = {
-            "checkout",
-            "regression"
-    })
+    @DisplayName("3.2.2.2. Test case - Check preceding to checkout after setting quantity to more than in stock")
     public void verifyPrecedingToCheckoutAfterSettingProductQuantityToMoreThanInStock() {
         ProductPage productPage = navigation.clickOnHomePageLink()
                 .getProductCard(quantityLimitedProductName)
@@ -356,13 +328,10 @@ public class CheckoutTests extends BaseTest {
                 .getProductNames()[0].contains("***"));
     }
 
+    @Test
     @Feature("Cart page")
     @Tag("critical-path")
-    @Test(description = "3.2.2.3. Test case - Check preceding to checkout with unselected \"State\"",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.2.2.3. Test case - Check preceding to checkout with unselected \"State\"")
     public void verifyPrecedingToCheckoutWithUnselectedState() {
         CartPage cartPage = navigation.clickOnHomePageLink()
                 .getProductCard(defaultProductName)
@@ -377,13 +346,10 @@ public class CheckoutTests extends BaseTest {
     }
 
 
+    @Test
     @Feature("Logged out")
     @Tag("critical-path")
-    @Test(description = "3.2.3.1. Test case - Check adding product to cart being logged out",
-            groups = {
-            "checkout",
-            "critical-path"
-    })
+    @DisplayName("3.2.3.1. Test case - Check adding product to cart being logged out")
     public void verifyAddingProductToCartBeingLoggedOut() {
         logout();
 
